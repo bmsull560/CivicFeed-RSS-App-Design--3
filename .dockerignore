@@ -1,14 +1,5 @@
 node_modules
 dist
-backend
-.worktrees
 .git
-.github
-.vscode
-playwright-report
-test-results
+*.swp
 *.log
-.DS_Store
-Dockerfile
-.dockerignore
-docker-compose.yml
