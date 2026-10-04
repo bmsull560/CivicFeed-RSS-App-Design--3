@@ -1,16 +1,16 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import { ThemeProvider } from "next-themes";
+import { HashRouter } from "react-router-dom";
 import "./index.css";
 import App from "./App";
+import { TRPCProvider } from "./providers/trpc";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <BrowserRouter>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <TRPCProvider>
+      <HashRouter>
         <App />
-      </ThemeProvider>
-    </BrowserRouter>
+      </HashRouter>
+    </TRPCProvider>
   </StrictMode>
 );
