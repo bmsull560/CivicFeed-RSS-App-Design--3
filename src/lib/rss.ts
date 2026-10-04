@@ -1,130 +1,214 @@
-import type { FeedFetchStatus, FeedStats, DiscoveredFeed, FeedArticlesResponse } from "../types";
+import type { RssEntry, FetchResult } from "../types";
 
-const API_BASE = import.meta.env?.VITE_API_URL || "";
+const PROXIES = [
+  (url: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  (url: string) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+  (url: string) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+];
 
-function getApiBaseCandidates(): string[] {
-  const candidates = new Set<string>();
-  candidates.add(API_BASE);
-
-  if (
-    typeof window !== "undefined" &&
-    ["localhost", "127.0.0.1"].includes(window.location.hostname)
-  ) {
-    candidates.add("http://localhost:4000");
+function generateEntryId(link: string, title: string, pubDate: string): string {
+  const str = `${link}::${title}::${pubDate}`;
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash |= 0;
   }
-
-  return [...candidates];
+  return `entry-${Math.abs(hash).toString(36)}`;
 }
 
-async function fetchJson<T>(path: string, options?: RequestInit): Promise<T | null> {
-  for (const apiBase of getApiBaseCandidates()) {
-    try {
-      const res = await fetch(`${apiBase}${path}`, {
-        ...options,
-        signal: options?.signal ?? AbortSignal.timeout(20000),
-      });
-      if (res.ok) {
-        return (await res.json()) as T;
+/**
+ * Sentinel for missing/unparseable dates: the Unix epoch. Never silently
+ * substitute the current time, which would corrupt chronological sorting.
+ */
+const UNKNOWN_DATE_SENTINEL = "1970-01-01T00:00:00.000Z";
+
+function normalizeDate(dateStr: string): string {
+  if (!dateStr) return UNKNOWN_DATE_SENTINEL;
+  const cleaned = dateStr.replace(/\s+\(.*\)$/, "").trim();
+  const d = new Date(cleaned);
+  if (!isNaN(d.getTime())) return d.toISOString();
+  const usMatch = cleaned.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (usMatch) {
+    const [, m, day, y] = usMatch;
+    const dd = new Date(`${y}-${m.padStart(2, "0")}-${day.padStart(2, "0")}`);
+    if (!isNaN(dd.getTime())) return dd.toISOString();
+  }
+  return UNKNOWN_DATE_SENTINEL;
+}
+
+function extractRawTagText(item: Element, tag: string): string {
+  const m = item.innerHTML.match(new RegExp(`<${tag}[^>]*>\\s*([^<]+)`, "i"));
+  return m ? m[1].trim() : "";
+}
+
+function parseRssItems(items: Element[], feedId: string, feedName: string): RssEntry[] {
+  const entries: RssEntry[] = [];
+  const now = Date.now();
+  for (const item of items) {
+    const getText = (tag: string) => {
+      const el = item.getElementsByTagName(tag)[0];
+      return el ? el.textContent || "" : "";
+    };
+    const title = getText("title").trim();
+    const link = getText("link").trim() || item.getElementsByTagName("guid")[0]?.textContent?.trim() || extractRawTagText(item, "link");
+    const description = getText("description") || getText("content:encoded") || "";
+    const pubRaw = getText("pubDate") || getText("dc:date");
+    const author = getText("dc:creator") || getText("author") || undefined;
+    const guid = getText("guid").trim();
+    const cats: string[] = [];
+    const catEls = item.getElementsByTagName("category");
+    for (let i = 0; i < catEls.length; i++) {
+      const t = catEls[i].textContent?.trim();
+      if (t) cats.push(t);
+    }
+    if (!title && !link) continue;
+    entries.push({
+      id: guid || generateEntryId(link, title, pubRaw),
+      title: title || "Untitled",
+      link,
+      description,
+      pubDate: normalizeDate(pubRaw),
+      author,
+      categories: cats.length > 0 ? cats : undefined,
+      feedId,
+      feedName,
+      fetchedAt: now,
+    });
+  }
+  return entries;
+}
+
+function parseAtomEntries(entries: Element[], feedId: string, feedName: string): RssEntry[] {
+  const result: RssEntry[] = [];
+  const now = Date.now();
+  for (const entry of entries) {
+    const getText = (tag: string) => {
+      const el = entry.getElementsByTagName(tag)[0];
+      return el ? el.textContent || "" : "";
+    };
+    const title = getText("title").trim();
+    let link = "";
+    const links = entry.getElementsByTagName("link");
+    for (let i = 0; i < links.length; i++) {
+      const rel = links[i].getAttribute("rel");
+      if (!rel || rel === "alternate") {
+        link = links[i].getAttribute("href") || "";
+        break;
       }
-    } catch {
-      // Candidate unreachable; try the next one.
     }
+    const summary = getText("summary") || getText("content") || "";
+    const pubRaw = getText("published") || getText("updated");
+    const id = getText("id").trim();
+    let author: string | undefined;
+    const authorEl = entry.getElementsByTagName("author")[0];
+    if (authorEl) {
+      author = authorEl.getElementsByTagName("name")[0]?.textContent || undefined;
+    }
+    const cats: string[] = [];
+    const catEls = entry.getElementsByTagName("category");
+    for (let i = 0; i < catEls.length; i++) {
+      const t = catEls[i].getAttribute("term") || catEls[i].textContent;
+      if (t) cats.push(t.trim());
+    }
+    if (!title && !link) continue;
+    result.push({
+      id: id || generateEntryId(link, title, pubRaw),
+      title: title || "Untitled",
+      link,
+      description: summary,
+      pubDate: normalizeDate(pubRaw),
+      author,
+      categories: cats.length > 0 ? cats : undefined,
+      feedId,
+      feedName,
+      fetchedAt: now,
+    });
   }
-  return null;
+  return result;
 }
 
-/**
- * Fetch articles for a feed from the backend API.
- *
- * All RSS fetching, parsing, and caching now live in the backend service. The
- * frontend no longer falls back to public CORS proxies or parses XML.
- */
-export async function fetchFeedArticles(
-  feedId: string,
-  options: { refresh?: boolean } = {}
-): Promise<FeedArticlesResponse> {
-  const headers: Record<string, string> = {};
-  if (options.refresh) {
-    headers["Cache-Control"] = "max-age=0";
-  }
-
-  const data = await fetchJson<FeedArticlesResponse>(
-    `/api/feeds/${encodeURIComponent(feedId)}/articles`,
-    {
-      headers,
+export function parseRssXml(xmlText: string, feedId: string, feedName: string): RssEntry[] {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(xmlText, "application/xml");
+  const parserError = doc.querySelector("parsererror");
+  if (parserError) {
+    const htmlDoc = parser.parseFromString(xmlText, "text/html");
+    const items = htmlDoc.querySelectorAll("item");
+    if (items.length > 0) {
+      const elements: Element[] = [];
+      items.forEach(i => elements.push(i as Element));
+      return parseRssItems(elements, feedId, feedName);
     }
-  );
-
-  if (!data) {
-    return { entries: [], cached: false, error: "Backend unreachable" };
+    return [];
   }
-
-  return data;
+  const rssItems = doc.getElementsByTagName("item");
+  if (rssItems.length > 0) {
+    const elements: Element[] = [];
+    for (let i = 0; i < rssItems.length; i++) elements.push(rssItems[i]);
+    return parseRssItems(elements, feedId, feedName);
+  }
+  const atomEntries = doc.getElementsByTagName("entry");
+  if (atomEntries.length > 0) {
+    const elements: Element[] = [];
+    for (let i = 0; i < atomEntries.length; i++) elements.push(atomEntries[i]);
+    return parseAtomEntries(elements, feedId, feedName);
+  }
+  return [];
 }
 
-export async function fetchFeedStatus(feedId: string): Promise<FeedFetchStatus | null> {
-  return fetchJson<FeedFetchStatus>(`/api/feeds/${encodeURIComponent(feedId)}/status`, {
-    signal: AbortSignal.timeout(10000),
+export interface FetchFeedOptions {
+  fetchImpl?: typeof fetch;
+  timeoutMs?: number;
+}
+
+function fetchWithTimeout(url: string, timeoutMs: number, fetchImpl: typeof fetch): Promise<Response> {
+  return new Promise((resolve, reject) => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => {
+      controller.abort();
+      reject(new Error(`Timeout after ${timeoutMs}ms`));
+    }, timeoutMs);
+    fetchImpl(url, { signal: controller.signal })
+      .then(response => { clearTimeout(timer); resolve(response); })
+      .catch(err => { clearTimeout(timer); reject(err); });
   });
 }
 
-export async function fetchFeedHealth(
-  feedId: string
-): Promise<import("../types").FeedHealth | null> {
-  return fetchJson<import("../types").FeedHealth>(
-    `/api/feeds/${encodeURIComponent(feedId)}/health`,
-    {
-      signal: AbortSignal.timeout(30000),
-    }
-  );
-}
-
-export async function fetchFeedStats(): Promise<FeedStats | null> {
-  return fetchJson<FeedStats>("/api/stats/feeds", {
-    signal: AbortSignal.timeout(10000),
-  });
-}
-
-export async function discoverFeeds(inputUrl: string): Promise<DiscoveredFeed[]> {
-  const data = await fetchJson<{ feeds?: DiscoveredFeed[] }>(
-    `/api/discover?url=${encodeURIComponent(inputUrl)}`,
-    {
-      signal: AbortSignal.timeout(15000),
-    }
-  );
-  return data?.feeds || [];
-}
-
-/**
- * Validate a candidate RSS URL by asking the backend to fetch it.
- *
- * For user-added feeds we don't yet have a backend feed id, so we fetch the
- * feed directly through the backend discovery/fetch path by providing the URL.
- * The backend preview endpoint is not implemented yet; this function falls back
- * to discovery and then fetches the discovered feed.
- */
-export async function validateFeedUrl(inputUrl: string): Promise<{
-  ok: boolean;
-  entries?: import("../types").RssEntry[];
-  error?: string;
-}> {
-  const discovered = await discoverFeeds(inputUrl);
-
-  // Ask the backend to discover/validate the URL. If discovery returns a feed,
-  // we consider it valid. A future backend endpoint could do a full preview.
-  if (discovered.length > 0) {
-    return { ok: true };
+export async function fetchFeed(url: string, feedId: string, feedName: string, options?: FetchFeedOptions): Promise<FetchResult> {
+  const fetchImpl = options?.fetchImpl ?? fetch;
+  const timeoutMs = options?.timeoutMs ?? 12000;
+  const proxyTimeoutMs = options?.timeoutMs ?? 18000;
+  const errors: string[] = [];
+  if (!url.startsWith("https://")) {
+    return { entries: [], error: `Rejected non-https feed URL: ${url}` };
   }
-
-  return { ok: false, error: "Could not discover a valid RSS or Atom feed at that URL." };
-}
-
-// Deprecated alias kept for minimal diff during migration.
-export async function fetchFeed(
-  _url: string,
-  feedId: string,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _feedName: string
-): Promise<{ entries: import("../types").RssEntry[]; error: string | null }> {
-  return fetchFeedArticles(feedId);
+  try {
+    const res = await fetchWithTimeout(url, timeoutMs, fetchImpl);
+    if (res.ok) {
+      const xml = await res.text();
+      const entries = parseRssXml(xml, feedId, feedName);
+      if (entries.length > 0) return { entries, error: null };
+    }
+  } catch (e) {
+    errors.push(`direct: ${e instanceof Error ? e.message : String(e)}`);
+  }
+  for (const proxyFn of PROXIES) {
+    const proxyUrl = proxyFn(url);
+    try {
+      const res = await fetchWithTimeout(proxyUrl, proxyTimeoutMs, fetchImpl);
+      if (!res.ok) { errors.push(`proxy: HTTP ${res.status}`); continue; }
+      const xml = await res.text();
+      if (!xml || xml.length < 50) { errors.push(`proxy: Empty response`); continue; }
+      const entries = parseRssXml(xml, feedId, feedName);
+      if (entries.length > 0) return { entries, error: null };
+      errors.push(`proxy: No entries parsed`);
+    } catch (e) {
+      errors.push(`proxy: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }
+  return {
+    entries: [],
+    error: `Failed after ${errors.length} attempts: ${errors.slice(0, 3).join("; ")}`,
+  };
 }
