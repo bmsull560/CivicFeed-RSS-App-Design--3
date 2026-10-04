@@ -1,250 +1,147 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { AlertTriangle, RefreshCw, ArrowRight, Check } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useUserFeeds } from "../hooks/useUserFeeds";
+import {
+  TrendingUp, Globe, Shield, Heart, Leaf, Landmark, Scale, Briefcase, Store,
+  Train, AlertTriangle, Palette, Eye, FileText, Star, Newspaper, BookOpen, Sprout,
+  Cpu, Home, HeartPulse, RefreshCw, ArrowRight, Rss,
+} from "lucide-react";
+import { feedStats, categoryList } from "../data/feeds";
+import { listResearchProjects, listTopicCards } from "../lib/domain";
+import { useFeedCache } from "../hooks/useFeedCache";
 import CategoryCard from "../components/CategoryCard";
 import EntryCard from "../components/EntryCard";
 import EmptyState from "../components/EmptyState";
-import { thematicHubs } from "../lib/hubs";
-import { getPreferences, updatePreferences } from "../lib/userData";
-import type { RssEntry, SearchResultItem } from "../types";
+import ResearchProjectCard from "../components/ResearchProjectCard";
+import { Clock, ArrowRight as ArrowRightIcon } from "lucide-react";
 
-function toRssEntry(r: SearchResultItem): RssEntry {
-  return {
-    id: r.entryId,
-    title: r.title,
-    link: r.link,
-    description: r.description,
-    pubDate: r.pubDate,
-    author: r.author || undefined,
-    feedId: r.feedId,
-    feedName: r.feedName,
-    fetchedAt: 0,
-    aiSummary: r.aiSummary,
-    aiTags: r.aiTags,
-  };
+const byCategory = feedStats.byCategory as Record<string, number>;
+
+const categoryIcons: Record<string, React.ReactNode> = {
+  "Oversight & Audits": <Eye size={20} />,
+  "Courts & Judiciary": <Scale size={20} />,
+  "Finance & Economy": <TrendingUp size={20} />,
+  "Environment & Energy": <Leaf size={20} />,
+  "Health & Science": <Heart size={20} />,
+  "Congress & Legislation": <Landmark size={20} />,
+  "Defense & Security": <Shield size={20} />,
+  "General": <Newspaper size={20} />,
+  "Diplomacy & Foreign Affairs": <Globe size={20} />,
+  "Grants & Arts": <Palette size={20} />,
+  "Labor & Employment": <Briefcase size={20} />,
+  "Safety & Consumer Protection": <AlertTriangle size={20} />,
+  "Commerce & Trade": <Store size={20} />,
+  "Rulemaking & Regulations": <FileText size={20} />,
+  "Development & Education": <BookOpen size={20} />,
+  "Executive & Press": <Star size={20} />,
+  "Transportation": <Train size={20} />,
+  "Agriculture & Food": <Sprout size={20} />,
+  "Technology, Cybersecurity, & Space": <Cpu size={20} />,
+  "Housing, Urban Development, & Infrastructure": <Home size={20} />,
+  "Veterans Affairs, Healthcare, & Benefits": <HeartPulse size={20} />,
+};
+
+function formatRelativeTime(timestamp: number): string {
+  const diff = Date.now() - timestamp;
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
 }
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { allFeeds, enabledFeeds, catalogError, refresh } = useUserFeeds();
-  const [recentEntries, setRecentEntries] = useState<RssEntry[]>([]);
-  const [recentLoading, setRecentLoading] = useState(false);
+  const { allCached, clearAll, stats } = useFeedCache();
+  const cachedData = useMemo(() => allCached(), [allCached]);
+  const cacheStats = useMemo(() => stats(), [stats]);
 
-  useEffect(() => {
-    const load = async () => {
-      setRecentLoading(true);
-      try {
-        const apiBase = import.meta.env?.VITE_API_URL || "";
-        const candidates = new Set<string>([apiBase]);
-        if (["localhost", "127.0.0.1"].includes(window.location.hostname)) {
-          candidates.add("http://localhost:4000");
-        }
+  const handleRefreshAll = () => { clearAll(); window.location.reload(); };
 
-        for (const base of candidates) {
-          try {
-            const res = await fetch(`${base}/api/articles/recent?limit=50`, {
-              signal: AbortSignal.timeout(10000),
-            });
-            if (!res.ok) continue;
-            const data = (await res.json()) as { results?: SearchResultItem[] };
-            setRecentEntries((data.results || []).map(toRssEntry));
-            return;
-          } catch {
-            // try next candidate
-          }
-        }
-      } finally {
-        setRecentLoading(false);
-      }
-    };
-
-    void load();
-  }, []);
-
-  const enabledIds = useMemo(() => new Set(enabledFeeds.map((f) => f.id)), [enabledFeeds]);
-  const visibleRecent = recentEntries.filter((e) => enabledIds.has(e.feedId)).slice(0, 8);
-
-  const preferences = useMemo(() => getPreferences(), []);
-  const followedHubKeys = useMemo(() => preferences.followedHubs || [], [preferences.followedHubs]);
-  const digestFrequency = preferences.digestFrequency;
-  const personalized = followedHubKeys.length > 0;
-
-  const sortedHubs = useMemo(() => {
-    const followed = thematicHubs.filter((h) => followedHubKeys.includes(h.key));
-    const rest = thematicHubs.filter((h) => !followedHubKeys.includes(h.key));
-    return personalized ? [...followed, ...rest] : thematicHubs;
-  }, [followedHubKeys, personalized]);
-
-  const followedRecent = useMemo(() => {
-    if (!personalized) return visibleRecent;
-    const followedCategories = new Set(
-      thematicHubs.filter((h) => followedHubKeys.includes(h.key)).flatMap((h) => h.categories)
-    );
-    return visibleRecent
-      .filter((e) => {
-        const feed = enabledFeeds.find((f) => f.id === e.feedId);
-        return feed && followedCategories.has(feed.category);
-      })
-      .slice(0, 6);
-  }, [visibleRecent, followedHubKeys, personalized, enabledFeeds]);
-
-  const tierOneFeeds = enabledFeeds.filter((f) => f.priority === 1).slice(0, 6);
-
-  const handleRefreshAll = () => {
-    refresh();
-    window.location.reload();
-  };
+  const recentEntries = cachedData
+    .flatMap(c => c.entries.slice(0, 3).map(e => ({ ...e, _feedId: c.feedId })))
+    .sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime())
+    .slice(0, 10);
 
   return (
-    <div className="space-y-10">
-      {/* Hero / Briefing header */}
-      <section className="max-w-2xl">
-        <p className="text-[0.6875rem] font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-2">
-          {personalized ? "Your Personalized Briefing" : "Your Daily Briefing"}
-          {digestFrequency && (
-            <span className="ml-2 text-slate-500 dark:text-slate-400 normal-case">
-              •{" "}
-              {digestFrequency === "realtime"
-                ? "Real-time stream"
-                : digestFrequency === "daily"
-                  ? "Daily at 8:00 AM"
-                  : "Weekly on Saturday"}
-            </span>
-          )}
-        </p>
-        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-slate-900 dark:text-slate-100 leading-tight">
-          U.S. Government RSS Feeds
-        </h1>
-        <p className="mt-3 text-slate-600 dark:text-slate-400 leading-relaxed">
-          {personalized
-            ? "Updates from the topics you follow, organized into clear hubs and summarized in plain language."
-            : `Understand ${allFeeds.length} federal feeds without the noise—organized into five clear hubs and summarized in plain language.`}
-          {enabledFeeds.length !== allFeeds.length && ` ${enabledFeeds.length} currently enabled.`}
-        </p>
-        {catalogError && <p className="text-sm text-amber-700 mt-3">{catalogError}</p>}
-        <div className="flex flex-wrap items-center gap-3 mt-5">
-          <Button type="button" onClick={() => navigate("/feeds")}>
-            Browse All Feeds <ArrowRight size={16} />
-          </Button>
-          <Button type="button" variant="outline" onClick={handleRefreshAll}>
-            <RefreshCw size={16} /> Refresh
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => {
-              updatePreferences({ onboardingComplete: false, onboardingDismissed: false });
-              window.location.reload();
-            }}
-          >
-            Personalize
-          </Button>
+    <div className="space-y-8">
+      <section className="card p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900">U.S. Government RSS Feeds</h1>
+            <p className="text-sm text-slate-500 mt-1">{feedStats.total} feeds across {Object.keys(feedStats.byCategory).length} categories from federal agencies</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <button onClick={handleRefreshAll} className="btn-secondary" type="button" title="Clear cache and reload"><RefreshCw size={16} /> Refresh All</button>
+            <button onClick={() => navigate("/feeds")} className="btn-primary" type="button">Browse All <ArrowRight size={16} /></button>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
+          <div className="bg-slate-50 rounded-lg p-3 text-center"><p className="text-2xl font-bold text-blue-600">{feedStats.total}</p><p className="text-[0.6875rem] text-slate-500 uppercase tracking-wide">Total Feeds</p></div>
+          <div className="bg-slate-50 rounded-lg p-3 text-center"><p className="text-2xl font-bold text-blue-600">{Object.keys(feedStats.byCategory).length}</p><p className="text-[0.6875rem] text-slate-500 uppercase tracking-wide">Categories</p></div>
+          <div className="bg-slate-50 rounded-lg p-3 text-center"><p className="text-2xl font-bold text-blue-600">{cachedData.length}</p><p className="text-[0.6875rem] text-slate-500 uppercase tracking-wide">Cached</p></div>
+          <div className="bg-slate-50 rounded-lg p-3 text-center"><p className="text-2xl font-bold text-blue-600">{cacheStats.oldestFetch ? formatRelativeTime(cacheStats.oldestFetch) : "—"}</p><p className="text-[0.6875rem] text-slate-500 uppercase tracking-wide">Last Update</p></div>
         </div>
       </section>
 
-      {/* Thematic Hubs */}
+      <section>
+        <h2 className="text-lg font-semibold text-slate-900 mb-4">Browse by Category</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+          {categoryList.map(cat => (
+            <CategoryCard key={cat} category={cat} count={byCategory[cat] || 0} icon={categoryIcons[cat] || <Rss size={20} />}
+              onClick={() => navigate(`/feeds?category=${encodeURIComponent(cat)}`)} />
+          ))}
+        </div>
+      </section>
+
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-serif text-xl font-semibold text-slate-900 dark:text-slate-100">
-            {personalized ? "Your Topics" : "Thematic Hubs"}
-          </h2>
+          <h2 className="text-lg font-semibold text-slate-900">Explore Topics</h2>
+          <button onClick={() => navigate("/explore")} className="text-sm font-medium text-blue-600 hover:text-blue-500 inline-flex items-center gap-1" type="button">
+            View all <ArrowRightIcon size={14} />
+          </button>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-          {sortedHubs.map((hub) => {
-            const count = enabledFeeds.filter((f) => hub.categories.includes(f.category)).length;
-            const isFollowed = followedHubKeys.includes(hub.key);
-            return (
-              <div key={hub.key} className="relative">
-                {isFollowed && (
-                  <span className="absolute -top-2 -right-2 z-10 inline-flex items-center justify-center size-5 rounded-full bg-blue-600 text-white">
-                    <Check size={12} strokeWidth={3} />
-                  </span>
-                )}
-                <CategoryCard
-                  category={hub.label}
-                  count={count}
-                  icon={hub.icon}
-                  onClick={() => navigate(`/feeds?hub=${encodeURIComponent(hub.key)}`)}
-                />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
+          {listTopicCards().map(topic => (
+            <button key={topic.id} type="button" onClick={() => navigate(`/topic/${topic.slug}`)}
+              className="card p-4 text-left hover:border-blue-300 hover:shadow-sm transition-all group">
+              <h3 className="text-sm font-semibold text-slate-900 group-hover:text-blue-700 line-clamp-2">{topic.name}</h3>
+              <p className="text-xs text-slate-500 mt-1.5 line-clamp-2">{topic.description}</p>
+              <div className="flex flex-wrap gap-1 mt-3">
+                {topic.categories.slice(0, 2).map(cat => (
+                  <span key={cat} className="badge bg-slate-100 text-slate-600">{cat}</span>
+                ))}
               </div>
-            );
-          })}
+              <span className="inline-flex items-center gap-1.5 text-xs text-slate-500 mt-3">
+                <Clock size={13} className="text-slate-400" />
+                {topic.eventCount} events
+              </span>
+            </button>
+          ))}
         </div>
       </section>
 
-      {/* Critical Alerts — Tier 1 */}
-      {tierOneFeeds.length > 0 && (
-        <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-serif text-xl font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <AlertTriangle className="text-red-500" size={20} />
-              Critical Alerts
-            </h2>
-            <Button type="button" variant="link" onClick={() => navigate("/feeds?priority=1")}>
-              View all Tier 1 →
-            </Button>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {tierOneFeeds.map((feed) => (
-              <button
-                key={feed.id}
-                onClick={() => navigate(`/feed/${feed.id}`)}
-                className="card-hover text-left"
-                type="button"
-              >
-                <Card className="p-4 h-full">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <h3 className="font-serif font-semibold text-slate-900 dark:text-slate-100 text-sm">
-                        {feed.shortName}
-                      </h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                        {feed.agency}
-                      </p>
-                    </div>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[0.6875rem] font-medium bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-400 flex-shrink-0">
-                      Tier 1
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-3 line-clamp-2">
-                    {feed.description}
-                  </p>
-                </Card>
-              </button>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Recent Entries */}
       <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-serif text-xl font-semibold text-slate-900 dark:text-slate-100">
-            {personalized ? "For You" : "Recent Entries"}
-          </h2>
-          <Button type="button" variant="link" onClick={() => navigate("/reading")}>
-            Reading stream →
-          </Button>
+        <h2 className="text-lg font-semibold text-slate-900 mb-4">Research</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {listResearchProjects().map(project => (
+            <ResearchProjectCard key={project.id} project={project} />
+          ))}
         </div>
-        {recentLoading ? (
-          <p className="text-sm text-slate-500">Loading recent entries…</p>
-        ) : (personalized ? followedRecent : visibleRecent).length > 0 ? (
-          <div className="grid grid-cols-1 gap-4">
-            {(personalized ? followedRecent : visibleRecent).map((entry) => (
-              <EntryCard key={entry.id} entry={entry} compact />
-            ))}
+      </section>
+
+      <section>
+        <h2 className="text-lg font-semibold text-slate-900 mb-4">Recent Entries</h2>
+        {recentEntries.length > 0 ? (
+          <div className="card divide-y divide-slate-100 px-5">
+            {recentEntries.map(entry => <EntryCard key={entry.id} entry={entry} compact />)}
           </div>
         ) : (
-          <Card className="p-6">
-            <EmptyState
-              message="No recent entries yet"
-              subMessage="Visit a feed to load entries from the backend cache."
-              action={{ label: "Browse Feeds", onClick: () => navigate("/feeds") }}
-            />
-          </Card>
+          <div className="card">
+            <EmptyState message="No cached entries yet" subMessage="Visit a feed to load entries. They'll be cached locally for quick access."
+              action={{ label: "Browse Feeds", onClick: () => navigate("/feeds") }} />
+          </div>
         )}
       </section>
     </div>
