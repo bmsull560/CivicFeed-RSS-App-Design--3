@@ -1,49 +1,29 @@
-import path from "path";
-import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import devServer from "@hono/vite-dev-server"
+import path from "path"
+const __dirname = import.meta.dirname
+import react from "@vitejs/plugin-react"
+import { defineConfig } from "vite"
+import { inspectAttr } from 'plugin-inspect-react-code'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: "/",
-  plugins: [react()],
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          const normalized = id.replace(/\\/g, "/");
-          if (
-            normalized.includes("/node_modules/react") ||
-            normalized.includes("/node_modules/scheduler")
-          )
-            return "react-vendor";
-          if (normalized.includes("/node_modules/react-router")) return "router-vendor";
-          if (normalized.includes("/node_modules/@radix-ui/")) return "radix-vendor";
-          if (normalized.includes("/node_modules/lucide-react/")) return "icons-vendor";
-        },
-      },
-    },
-  },
+  plugins: [
+    devServer({ entry: "api/boot.ts", exclude: [/^\/(?!api\/).*$/] }),
+    inspectAttr(), react()],
   server: {
     port: 3000,
-    proxy: {
-      "/api": {
-        target: "http://localhost:4000",
-        changeOrigin: true,
-      },
-    },
-  },
-  preview: {
-    port: 4173,
-    proxy: {
-      "/api": {
-        target: "http://localhost:4000",
-        changeOrigin: true,
-      },
-    },
   },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "@contracts": path.resolve(__dirname, "./contracts"),
+      "@db": path.resolve(__dirname, "./db"),
+      "db": path.resolve(__dirname, "./db"),
     },
+  },
+  envDir: path.resolve(__dirname),
+  build: {
+    outDir: path.resolve(__dirname, "dist/public"),
+    emptyOutDir: true,
   },
 });
