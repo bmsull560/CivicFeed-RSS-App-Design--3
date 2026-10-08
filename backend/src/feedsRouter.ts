@@ -1,3 +1,4 @@
+import express from "express";
 import { type Request, type Response, type Router } from "express";
 import { db } from "./db.js";
 import { logger } from "./logger.js";

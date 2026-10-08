@@ -9,8 +9,7 @@ import { parseTags, getRecentArticles, searchArticles } from "./search.js";
 import { fetchFeed } from "./rss.js";
 import { type FeedRow } from "./db.js";
 import { type Feed } from "./feeds.js";
-import { type RssEntry, fetchFeed } from "./rss.js";
-import express from "express";
+import { type RssEntry } from "./rss.js";
 
 export const articlesRouter = (): Router => {
   const router = express.Router();
@@ -146,8 +145,3 @@ export const articlesRouter = (): Router => {
 
   return router;
 };
-
-// Import fetchFeed function for use in articles router
-import { fetchFeed } from "./rss.js";
-import { searchArticles, getRecentArticles, parseTags } from "./search.js";
-import { type FeedRow } from "./db.js";
