@@ -12,10 +12,16 @@ import { startFeedRefreshScheduler } from "./scheduler.js";
 import { discoverFeeds } from "./discovery.js";
 import { validateFeedHealth } from "./feed-health.js";
 import { type Feed } from "./feeds.js";
+import { feedsRouter } from "./feedsRouter.js";
+import { articlesRouter } from "./articlesRouter.js";
 
 export const app = express();
 const PORT = process.env.PORT || 4000;
 const startTime = Date.now();
+
+// Use routers for better organization
+app.use("/api", feedsRouter());
+app.use("/api", articlesRouter());
 
 interface CountRow {
   c: number;
