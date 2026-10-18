@@ -18,7 +18,8 @@ export const articlesRouter = (): Router => {
   router.get("/feeds/:id/articles", async (req, res) => {
     const feedId = req.params.id;
 
-    const feedRow = db.prepare("SELECT * FROM feeds WHERE id = ?").get(feedId) as FeedRow | undefined;
+    const feedRow = db.prepare("SELECT * FROM feeds WHERE id = ?").get(feedId) as
+      FeedRow | undefined;
     if (!feedRow) return res.status(404).json({ error: "Feed not found" });
 
     let entries: RssEntry[];
