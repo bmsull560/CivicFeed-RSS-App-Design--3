@@ -12,5 +12,10 @@ export default defineConfig([
       ecmaVersion: 2022,
       globals: globals.node,
     },
+    rules: {
+      // `_`-prefixed parameters are intentionally unused (e.g. Express
+      // error middleware must declare all four parameters).
+      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+    },
   },
 ]);
