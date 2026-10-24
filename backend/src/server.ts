@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
+import { pathToFileURL } from "node:url";
 import { db, type FeedRow } from "./db.js";
 import { generateRecap } from "./recap.js";
 import { logger } from "./logger.js";
@@ -254,7 +255,7 @@ const errorHandler: express.ErrorRequestHandler = (
 };
 app.use(errorHandler);
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const refreshIntervalMs = Number(process.env.CIVICFEED_REFRESH_INTERVAL_MS) || 60_000;
   const disableScheduler = process.env.CIVICFEED_DISABLE_SCHEDULER === "1";
   const server = app.listen(PORT, () => {
