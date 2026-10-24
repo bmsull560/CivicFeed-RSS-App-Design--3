@@ -275,5 +275,13 @@ describe("server", () => {
       expect(res.status).toBe(201);
       expect(res.body.id).toBe("collision-feed-2");
     });
+
+    it("POST /api/feeds trims separator characters from generated ids", async () => {
+      const res = await request(app)
+        .post("/api/feeds")
+        .send({ ...validFeed, name: "Spaced Feed", short_name: " - Spaced Feed - " });
+      expect(res.status).toBe(201);
+      expect(res.body.id).toBe("spaced-feed");
+    });
   });
 });

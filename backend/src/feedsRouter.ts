@@ -29,7 +29,7 @@ const slugify = (value: string): string =>
     .toLowerCase()
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
+    .replace(/^-|-$/g, "")
     .slice(0, 64);
 
 // Generates a stable text id from the feed's short name, appending a numeric
