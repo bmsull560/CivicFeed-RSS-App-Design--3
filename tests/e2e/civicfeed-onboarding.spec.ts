@@ -112,7 +112,11 @@ test("first-use dialog has no automatically detectable accessibility violations"
   page,
 }) => {
   await page.goto("/");
-  await expect(page.getByRole("dialog")).toBeVisible();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog).toBeVisible();
+  // Wait out the dialog's fade-in animation so axe measures the settled
+  // colors instead of mid-animation opacity composites.
+  await expect(dialog).toHaveCSS("opacity", "1");
 
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
