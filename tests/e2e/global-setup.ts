@@ -99,6 +99,7 @@ export default async function globalSetup() {
       PORT: String(BACKEND_PORT),
       CIVICFEED_ALLOW_PRIVATE_URLS: "1",
       CIVICFEED_DISABLE_SCHEDULER: "1",
+      CIVICFEED_RATE_LIMIT_MAX: "10000",
     },
   });
   await waitForServer(`http://127.0.0.1:${BACKEND_PORT}/api/health`);

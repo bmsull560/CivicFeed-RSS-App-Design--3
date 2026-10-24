@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import rateLimit from "express-rate-limit";
 import { db, type FeedRow } from "./db.js";
 import { generateRecap } from "./recap.js";
 import { logger } from "./logger.js";
@@ -47,7 +48,20 @@ app.use((req, res, next) => {
   next();
 });
 
+// Rate limit all /api routes. Limits are env-configurable so tests and
+// deployments can tune them without code changes.
+const rateLimitWindowMs = Number(process.env.CIVICFEED_RATE_LIMIT_WINDOW_MS) || 60_000;
+const rateLimitMax = Number(process.env.CIVICFEED_RATE_LIMIT_MAX) || 300;
+
+const apiLimiter = rateLimit({
+  windowMs: rateLimitWindowMs,
+  limit: rateLimitMax,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+});
+
 // API routers (mounted after body parsing and logging middleware)
+app.use("/api", apiLimiter);
 app.use("/api", feedsRouter());
 app.use("/api", articlesRouter());
 
