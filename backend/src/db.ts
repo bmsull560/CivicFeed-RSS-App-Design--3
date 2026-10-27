@@ -13,6 +13,27 @@ db.pragma("journal_mode = WAL");
 
 applyMigrations(db, civicfeedMigrations, logger);
 
+// Row shape of the feeds table (snake_case, as stored in SQLite).
+export interface FeedRow {
+  id: string;
+  name: string;
+  short_name: string;
+  agency: string;
+  description: string;
+  rss_url: string;
+  website: string;
+  department: string;
+  category: string;
+  sub_category: string;
+  content_type: string;
+  update_frequency: string;
+  status: string;
+  tags: string;
+  health_status: string | null;
+  health_checked_at: number | null;
+  health_error: string | null;
+}
+
 function seedFeeds() {
   const insert = db.prepare(`
     INSERT INTO feeds

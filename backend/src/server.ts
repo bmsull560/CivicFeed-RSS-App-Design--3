@@ -1,11 +1,8 @@
 import express from "express";
 import cors from "cors";
-import { db } from "./db.js";
-import { fetchFeed, type RssEntry } from "./rss.js";
-import { getCachedArticles, saveArticles } from "./cache.js";
-import { getCachedEnrichment } from "./ai.js";
-import { enqueueArticleEnrichment } from "./enrichment-queue.js";
-import { getRecentArticles, parseTags } from "./search.js";
+import rateLimit from "express-rate-limit";
+import { pathToFileURL } from "node:url";
+import { db, type FeedRow } from "./db.js";
 import { generateRecap } from "./recap.js";
 import { logger } from "./logger.js";
 import { startFeedRefreshScheduler } from "./scheduler.js";
@@ -19,32 +16,8 @@ export const app = express();
 const PORT = process.env.PORT || 4000;
 const startTime = Date.now();
 
-// Use routers for better organization
-app.use("/api", feedsRouter());
-app.use("/api", articlesRouter());
-
 interface CountRow {
   c: number;
-}
-
-interface FeedRow {
-  id: string;
-  name: string;
-  short_name: string;
-  agency: string;
-  description: string;
-  rss_url: string;
-  website: string;
-  department: string;
-  category: string;
-  sub_category: string;
-  content_type: string;
-  update_frequency: string;
-  status: string;
-  tags: string;
-  health_status: string | null;
-  health_checked_at: number | null;
-  health_error: string | null;
 }
 
 interface FetchStatusRow {
@@ -56,19 +29,6 @@ interface FetchStatusRow {
   success_count: number;
   failure_count: number;
   next_fetch_at: number | null;
-}
-
-interface ArticleByIdRow {
-  entry_id: string;
-  feed_id: string;
-  title: string;
-  link: string;
-  description: string;
-  pub_date: string;
-  author: string | null;
-  feed_name: string;
-  ai_summary: string | null;
-  ai_tags: string | null;
 }
 
 app.use(cors());
@@ -88,6 +48,23 @@ app.use((req, res, next) => {
   });
   next();
 });
+
+// Rate limit all /api routes. Limits are env-configurable so tests and
+// deployments can tune them without code changes.
+const rateLimitWindowMs = Number(process.env.CIVICFEED_RATE_LIMIT_WINDOW_MS) || 60_000;
+const rateLimitMax = Number(process.env.CIVICFEED_RATE_LIMIT_MAX) || 300;
+
+const apiLimiter = rateLimit({
+  windowMs: rateLimitWindowMs,
+  limit: rateLimitMax,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+});
+
+// API routers (mounted after body parsing and logging middleware)
+app.use("/api", apiLimiter);
+app.use("/api", feedsRouter());
+app.use("/api", articlesRouter());
 
 // Health check
 app.get("/api/health", (_req, res) => {
@@ -265,18 +242,20 @@ app.get("/api/discover", async (req, res) => {
   }
 });
 
-// Global error handler
+// Global error handler. Express only treats a handler as error middleware
+// when it declares exactly four parameters, so _next must stay.
 const errorHandler: express.ErrorRequestHandler = (
   err: Error,
   _req: express.Request,
-  res: express.Response
+  res: express.Response,
+  _next: express.NextFunction
 ) => {
   logger.error("unhandled request error", err);
   res.status(500).json({ error: "Internal server error" });
 };
 app.use(errorHandler);
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const refreshIntervalMs = Number(process.env.CIVICFEED_REFRESH_INTERVAL_MS) || 60_000;
   const disableScheduler = process.env.CIVICFEED_DISABLE_SCHEDULER === "1";
   const server = app.listen(PORT, () => {

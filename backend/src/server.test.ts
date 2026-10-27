@@ -209,4 +209,79 @@ describe("server", () => {
       expect(typeof res.body.staleFeeds).toBe("number");
     });
   });
+
+  describe("feed creation", () => {
+    const validFeed = {
+      name: "Created Feed Test",
+      short_name: "Created Feed Test",
+      agency: "Test Agency",
+      description: "A feed created through the API",
+      rss_url: "https://example.com/created-feed.xml",
+      website: "https://example.com",
+      department: "Test Department",
+      category: "General",
+      sub_category: "Notices",
+      content_type: "news",
+      update_frequency: "daily",
+    };
+
+    it("POST /api/feeds creates a feed with a generated id and returns it in camelCase", async () => {
+      const res = await request(app).post("/api/feeds").send(validFeed);
+      expect(res.status).toBe(201);
+      expect(res.body.id).toBe("created-feed-test");
+      expect(res.body.name).toBe(validFeed.name);
+      expect(res.body.shortName).toBe(validFeed.short_name);
+      expect(res.body.rssUrl).toBe(validFeed.rss_url);
+      expect(res.body.status).toBe("pending");
+      expect(res.body.tags).toEqual([]);
+
+      const fetched = await request(app).get("/api/feeds/created-feed-test");
+      expect(fetched.status).toBe(200);
+      expect(fetched.body.id).toBe("created-feed-test");
+      expect(fetched.body.agency).toBe(validFeed.agency);
+    });
+
+    it("POST /api/feeds returns 400 when required fields are missing", async () => {
+      const res = await request(app)
+        .post("/api/feeds")
+        .send({ name: "Incomplete Feed", rss_url: "https://example.com/feed.xml" });
+      expect(res.status).toBe(400);
+      expect(res.body.error).toContain("short_name");
+      expect(res.body.error).toContain("agency");
+      expect(res.body.error).toContain("website");
+      expect(res.body.error).toContain("category");
+    });
+
+    it("POST /api/feeds returns 400 for a non-HTTP rss_url", async () => {
+      const res = await request(app)
+        .post("/api/feeds")
+        .send({ ...validFeed, short_name: "Bad Url Test", rss_url: "not-a-url" });
+      expect(res.status).toBe(400);
+      expect(res.body.error).toContain("rss_url");
+
+      const ftpRes = await request(app)
+        .post("/api/feeds")
+        .send({ ...validFeed, short_name: "Bad Url Test", rss_url: "ftp://example.com/feed.xml" });
+      expect(ftpRes.status).toBe(400);
+      expect(ftpRes.body.error).toContain("rss_url");
+    });
+
+    it("POST /api/feeds suffixes the generated id when the slug is taken", async () => {
+      insertTestFeed({ id: "collision-feed", shortName: "Collision Feed" });
+
+      const res = await request(app)
+        .post("/api/feeds")
+        .send({ ...validFeed, name: "Collision Feed", short_name: "Collision Feed" });
+      expect(res.status).toBe(201);
+      expect(res.body.id).toBe("collision-feed-2");
+    });
+
+    it("POST /api/feeds trims separator characters from generated ids", async () => {
+      const res = await request(app)
+        .post("/api/feeds")
+        .send({ ...validFeed, name: "Spaced Feed", short_name: " - Spaced Feed - " });
+      expect(res.status).toBe(201);
+      expect(res.body.id).toBe("spaced-feed");
+    });
+  });
 });

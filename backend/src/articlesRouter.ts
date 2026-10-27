@@ -1,15 +1,24 @@
 import express from "express";
-import { type Request, type Response, type Router } from "express";
-import { db } from "./db.js";
-import { logger } from "./logger.js";
+import { type Router } from "express";
+import { db, type FeedRow } from "./db.js";
 import { getCachedArticles, saveArticles } from "./cache.js";
 import { getCachedEnrichment } from "./ai.js";
 import { enqueueArticleEnrichment } from "./enrichment-queue.js";
 import { parseTags, getRecentArticles, searchArticles } from "./search.js";
-import { fetchFeed } from "./rss.js";
-import { type FeedRow } from "./db.js";
-import { type Feed } from "./feeds.js";
-import { type RssEntry } from "./rss.js";
+import { fetchFeed, type RssEntry } from "./rss.js";
+
+interface ArticleByIdRow {
+  entry_id: string;
+  feed_id: string;
+  title: string;
+  link: string;
+  description: string;
+  pub_date: string;
+  author: string | null;
+  feed_name: string;
+  ai_summary: string | null;
+  ai_tags: string | null;
+}
 
 export const articlesRouter = (): Router => {
   const router = express.Router();
@@ -18,7 +27,8 @@ export const articlesRouter = (): Router => {
   router.get("/feeds/:id/articles", async (req, res) => {
     const feedId = req.params.id;
 
-    const feedRow = db.prepare("SELECT * FROM feeds WHERE id = ?").get(feedId) as FeedRow | undefined;
+    const feedRow = db.prepare("SELECT * FROM feeds WHERE id = ?").get(feedId) as
+      FeedRow | undefined;
     if (!feedRow) return res.status(404).json({ error: "Feed not found" });
 
     let entries: RssEntry[];
