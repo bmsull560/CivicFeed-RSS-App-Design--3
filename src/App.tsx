@@ -10,6 +10,9 @@ import ReadingStream from "./pages/ReadingStream";
 import EntryDetail from "./pages/EntryDetail";
 import Bookmarks from "./pages/Bookmarks";
 import Archive from "./pages/Archive";
+import Categories from "./pages/Categories";
+import Activity from "./pages/Activity";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -19,6 +22,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/feeds" element={<FeedDirectory />} />
+          <Route path="/categories" element={<Categories />} />
+          <Route path="/activity" element={<Activity />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/feed/:id" element={<FeedDetail />} />
           <Route path="/reading" element={<ReadingStream />} />
           <Route path="/entry/:feedId/:entryId" element={<EntryDetail />} />

@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useMemo } from "react";
-import { Rss, Calendar, Bookmark, Archive, Newspaper as News } from "lucide-react";
+import { Rss, Calendar, Bookmark, Archive, Newspaper as News, FolderOpen, Bell, Settings } from "lucide-react";
 import { useUserFeeds } from "../hooks/useUserFeeds";
 import { thematicHubs } from "../lib/hubs";
 
@@ -18,19 +18,17 @@ function NavButton({ active, onClick, icon, label, count }: NavButtonProps) {
       onClick={onClick}
       className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
         active
-          ? "bg-primary text-primary-foreground"
-          : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+          ? "bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]"
+          : "text-[hsl(var(--foreground))] hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))]"
       }`}
       type="button"
     >
-      <span className={active ? "text-primary-foreground" : "text-slate-500 dark:text-slate-400"}>
-        {icon}
-      </span>
+      <span className={active ? "text-[hsl(var(--primary-foreground))]" : "text-[hsl(var(--muted-foreground))]"}>{icon}</span>
       <span className="truncate">{label}</span>
       {count != null && (
         <span
           className={`ml-auto text-[0.6875rem] flex-shrink-0 ${
-            active ? "text-primary-foreground" : "text-slate-500 dark:text-slate-400"
+            active ? "text-[hsl(var(--primary-foreground))]" : "text-[hsl(var(--muted-foreground))]"
           }`}
         >
           {count}
@@ -58,6 +56,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const isReading = location.pathname === "/reading";
   const isBookmarks = location.pathname === "/bookmarks";
   const isArchive = location.pathname === "/archive";
+  const isCategories = location.pathname === "/categories";
+  const isActivity = location.pathname === "/activity";
+  const isSettings = location.pathname === "/settings";
 
   const handleHub = (hubKey: string) => {
     navigate(`/feeds?hub=${encodeURIComponent(hubKey)}`);
@@ -83,6 +84,18 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     navigate("/archive");
     onClose();
   };
+  const handleCategories = () => {
+    navigate("/categories");
+    onClose();
+  };
+  const handleActivity = () => {
+    navigate("/activity");
+    onClose();
+  };
+  const handleSettings = () => {
+    navigate("/settings");
+    onClose();
+  };
 
   const hubCounts = useMemo(() => {
     const map: Record<string, number> = {};
@@ -102,7 +115,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         />
       )}
       <aside
-        className={`fixed lg:sticky top-14 left-0 z-40 w-64 h-[calc(100vh-3.5rem)] bg-card border-r border-border transform transition-transform lg:transform-none ${
+        className={`fixed lg:sticky top-14 left-0 z-40 w-64 h-[calc(100vh-3.5rem)] bg-[hsl(var(--sidebar-background))] border-r border-[hsl(var(--sidebar-border))] transform transition-transform lg:transform-none ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         role="navigation"
@@ -129,6 +142,18 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               label="Archive"
             />
             <NavButton
+              active={isCategories}
+              onClick={handleCategories}
+              icon={<FolderOpen size={18} />}
+              label="Categories"
+            />
+            <NavButton
+              active={isActivity}
+              onClick={handleActivity}
+              icon={<Bell size={18} />}
+              label="Activity"
+            />
+            <NavButton
               active={isAllFeeds}
               onClick={handleAllFeeds}
               icon={<Rss size={18} />}
@@ -141,10 +166,16 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               icon={<Calendar size={18} />}
               label="Weekly Recap"
             />
+            <NavButton
+              active={isSettings}
+              onClick={handleSettings}
+              icon={<Settings size={18} />}
+              label="Settings"
+            />
           </div>
 
           <div className="px-4 pt-4 pb-1">
-            <p className="text-[0.6875rem] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            <p className="text-[0.6875rem] font-semibold text-[hsl(var(--muted-foreground))] uppercase tracking-wider">
               Thematic Hubs
             </p>
           </div>
@@ -157,14 +188,14 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                   onClick={() => handleHub(hub.key)}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
                     isActive
-                      ? "bg-primary text-primary-foreground font-medium"
-                      : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      ? "bg-[hsl(var(--sidebar-primary))] text-[hsl(var(--sidebar-primary-foreground))] font-medium"
+                      : "text-[hsl(var(--sidebar-foreground))] hover:bg-[hsl(var(--sidebar-accent))] hover:text-[hsl(var(--sidebar-accent-foreground))]"
                   }`}
                   type="button"
                 >
                   <span
                     className={
-                      isActive ? "text-primary-foreground" : "text-slate-500 dark:text-slate-400"
+                      isActive ? "text-[hsl(var(--sidebar-primary-foreground))]" : "text-[hsl(var(--sidebar-muted-foreground))]"
                     }
                   >
                     {hub.icon}
@@ -172,7 +203,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                   <span className="truncate">{hub.label}</span>
                   <span
                     className={`ml-auto text-[0.6875rem] flex-shrink-0 ${
-                      isActive ? "text-primary-foreground" : "text-slate-500 dark:text-slate-400"
+                      isActive ? "text-[hsl(var(--sidebar-primary-foreground))]" : "text-[hsl(var(--sidebar-muted-foreground))]"
                     }`}
                   >
                     {hubCounts[hub.key] || 0}
