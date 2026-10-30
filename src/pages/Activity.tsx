@@ -14,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import type { Feed, RssEntry, FeedHealth } from "../types";
+import type { FeedHealth } from "../types";
 import { cn } from "@/lib/utils";
 
 type UrgencyLevel = "alert" | "high" | "update" | "announcement";
@@ -31,7 +31,7 @@ interface ActivityItem {
   entryId?: string;
   actionUrl?: string;
   actionLabel?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 const URGENCY_ORDER: Record<UrgencyLevel, number> = {
@@ -64,7 +64,7 @@ const URGENCY_BADGES: Record<UrgencyLevel, string> = {
 
 export default function Activity() {
   const navigate = useNavigate();
-  const { allFeeds, enabledFeeds } = useUserFeeds();
+  const { enabledFeeds } = useUserFeeds();
   const preferences = getPreferences();
   const [items, setItems] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);

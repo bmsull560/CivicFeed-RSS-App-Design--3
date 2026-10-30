@@ -36,9 +36,9 @@ export const feedsRouter = (): Router => {
   // Create feed
   router.post("/", (req, res) => {
     try {
-      const { name, short_name, agency, description, rss_url, website, department, category, sub_category, content_type, update_frequency } = req.body;
+      const { name, shortName, agency, description, rssUrl, website, department, category, subCategory, contentType, updateFrequency } = req.body;
       
-      if (!name || !rss_url) {
+      if (!name || !rssUrl) {
         res.status(400).json({ error: "Name and RSS URL are required" });
         return;
       }
@@ -48,16 +48,16 @@ export const feedsRouter = (): Router => {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', NULL)
       `).run(
         name,
-        short_name || null,
+        shortName || null,
         agency || null,
         description || null,
-        rss_url,
+        rssUrl,
         website || null,
         department || null,
         category || null,
-        sub_category || null,
-        content_type || null,
-        update_frequency || null
+        subCategory || null,
+        contentType || null,
+        updateFrequency || null
       );
 
       const newFeed = db.prepare("SELECT * FROM feeds WHERE id = ?").get(result.lastInsertRowid) as Feed;
@@ -71,7 +71,7 @@ export const feedsRouter = (): Router => {
   // Update feed
   router.put("/:id", (req, res) => {
     try {
-      const { name, short_name, agency, description, rss_url, website, department, category, sub_category, content_type, update_frequency } = req.body;
+      const { name, shortName, agency, description, rssUrl, website, department, category, subCategory, contentType, updateFrequency } = req.body;
       
       const existing = db.prepare("SELECT * FROM feeds WHERE id = ?").get(req.params.id) as Feed | undefined;
       if (!existing) {
@@ -86,16 +86,16 @@ export const feedsRouter = (): Router => {
         WHERE id = ?
       `).run(
         name ?? existing.name,
-        short_name ?? existing.short_name,
+        shortName ?? existing.shortName,
         agency ?? existing.agency,
         description ?? existing.description,
-        rss_url ?? existing.rss_url,
+        rssUrl ?? existing.rssUrl,
         website ?? existing.website,
         department ?? existing.department,
         category ?? existing.category,
-        sub_category ?? existing.sub_category,
-        content_type ?? existing.content_type,
-        update_frequency ?? existing.update_frequency,
+        subCategory ?? existing.subCategory,
+        contentType ?? existing.contentType,
+        updateFrequency ?? existing.updateFrequency,
         req.params.id
       );
 

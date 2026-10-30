@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { db } from "./db.js";
-import { insertTestFeed, makeEntry } from "./test-helpers.js";
-import { applyMigrations, civicfeedMigrations } from "./migrations.js";
+import { db } from "./db";
+import { insertTestFeed, makeEntry } from "./test-helpers";
+import { applyMigrations, civicfeedMigrations } from "./migrations";
 
 describe("SQLite Integration Tests", () => {
   beforeEach(async () => {

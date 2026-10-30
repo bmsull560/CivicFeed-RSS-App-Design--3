@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ExternalLink, MoreVertical, Edit, Trash2, Globe } from "lucide-react";
+import { MoreVertical, Trash2, Globe, Edit } from "lucide-react";
 import { Feed } from "@/types";
 import { FeedFormDialog } from "./FeedFormDialog";
 import {
@@ -8,7 +8,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 
@@ -64,10 +63,6 @@ export function FeedCard({
     onToggleEnabled?.(feed.id, enabled);
   };
 
-  const handleEdit = () => {
-    onEdit?.(feed);
-  };
-
   const handleRemove = () => {
     onRemove?.(feed.id);
   };
@@ -116,7 +111,7 @@ export function FeedCard({
             <Switch
               checked={feed.enabled !== false}
               onCheckedChange={(checked) => handleToggleEnabled(checked)}
-              aria-label={`${feed.shortName} ${checked ? "enabled" : "disabled"}`}
+              aria-label={`${feed.shortName} ${feed.enabled !== false ? "enabled" : "disabled"}`}
             />
             {feed.website && (
               <a

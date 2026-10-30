@@ -63,9 +63,45 @@ function seedFeeds() {
   console.log(`Synced ${feeds.length} feeds.`);
 }
 
-// Auto-seed if running directly or if --seed flag passed
-if (process.argv.includes("--seed") || import.meta.url === `file://${process.argv[1]}`) {
+// Auto-seed if running directly, if --seed flag passed, or if using in-memory DB for tests
+if (
+  process.argv.includes("--seed") ||
+  import.meta.url === `file://${process.argv[1]}` ||
+  process.env.CIVICFEED_DB_PATH === ":memory:"
+) {
   seedFeeds();
 }
 
 export { seedFeeds };
+
+export interface FeedRow {
+  id: string;
+  name: string;
+  short_name: string;
+  agency: string;
+  description: string;
+  rss_url: string;
+  website: string;
+  department: string;
+  category: string;
+  sub_category: string;
+  content_type: string;
+  update_frequency: string;
+  status: string;
+  tags: string;
+  health_status: string | null;
+  health_checked_at: number | null;
+  health_error: string | null;
+}
+
+export interface ArticleByIdRow {
+  entry_id: string;
+  feed_id: string;
+  title: string;
+  link: string;
+  description: string;
+  pub_date: string;
+  author: string | null;
+  feed_name: string;
+  ai_summary: string | null;
+}

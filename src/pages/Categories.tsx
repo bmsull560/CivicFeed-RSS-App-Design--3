@@ -1,22 +1,14 @@
 import { useMemo, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronDown, ChevronUp, Search, Filter, Download, Upload, Plus } from "lucide-react";
+import { ChevronDown, ChevronUp, Search, Download, Upload, Plus } from "lucide-react";
 import { useUserFeeds } from "../hooks/useUserFeeds";
 import { generateOpml, parseOpml, parsedOpmlToUserFeeds } from "../lib/opml";
 import { thematicHubs } from "../lib/hubs";
-import CategoryCard from "../components/CategoryCard";
 import FeedCard from "../components/FeedCard";
 import FeedFormDialog from "../components/FeedFormDialog";
 import EmptyState from "../components/EmptyState";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import type { Feed, UserFeed } from "../types";
-import { cn } from "@/lib/utils";
+import type { Feed } from "../types";
 
 export default function Categories() {
   const navigate = useNavigate();
@@ -200,7 +192,6 @@ export default function Categories() {
           {filteredCategories.map((category) => {
             const feeds = feedsByCategory.get(category) || [];
             const workingCount = feeds.filter((f) => f.status === "working").length;
-            const blockedCount = feeds.filter((f) => f.status === "blocked").length;
             const isExpanded = expandedCategories.has(category);
 
             // Get hub icon for this category
@@ -274,7 +265,7 @@ export default function Categories() {
                 onToggleEnabled={handleToggleEnabled}
                 onEdit={handleEditFeed}
                 onRemove={handleRemoveFeed}
-                onNavigate={navigate}
+                onNavigate={(id) => navigate(`/feed/${id}`)}
               />
             ))}
           </div>

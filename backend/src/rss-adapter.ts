@@ -47,7 +47,13 @@ export class RssAdapter implements IngestionAdapter {
   // ── IngestionAdapter implementation ──────────────────────────
 
   async fetch(url: string): Promise<RawDocument> {
-    return guardedFetch(url);
+    const result = await guardedFetch(url);
+    return {
+      content: result.text,
+      status: result.status,
+      ok: result.ok,
+      error: result.error ?? null,
+    };
   }
 
   parse(raw: RawDocument, feedId: string, feedName: string): RssEntry[] {

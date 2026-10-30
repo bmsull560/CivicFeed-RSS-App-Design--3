@@ -1,12 +1,9 @@
-import { useMemo, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { Moon, Sun, Monitor, Smartphone, Save, Trash2, Download, Upload, Info, AlertCircle, CheckCircle } from "lucide-react";
+import { useState, useRef } from "react";
+import { Moon, Sun, Monitor, Trash2, Download, Upload, Info, AlertCircle, CheckCircle } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useUserFeeds } from "../hooks/useUserFeeds";
 import { generateOpml, parseOpml, parsedOpmlToUserFeeds } from "../lib/opml";
 import { getPreferences, updatePreferences, loadUserData, clearUserData } from "../lib/userData";
-import FeedFormDialog from "../components/FeedFormDialog";
-import EmptyState from "../components/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -16,25 +13,16 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   AlertDialog,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import type { UserPreferences, UserFeed } from "../types";
-import { cn } from "@/lib/utils";
+import type { UserPreferences } from "../types";
 
 export default function Settings() {
-  const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const { enabledFeeds, refresh, importFeeds } = useUserFeeds();
   const [preferences, setPreferences] = useState<UserPreferences>(() => getPreferences());
@@ -57,7 +45,7 @@ export default function Settings() {
     setLocalProfile(savedProfile);
   }
 
-  const handlePreferenceChange = (key: keyof UserPreferences, value: any) => {
+  const handlePreferenceChange = (key: keyof UserPreferences, value: unknown) => {
     const updated = { ...preferences, [key]: value };
     setPreferences(updated);
     updatePreferences(updated);
@@ -216,7 +204,7 @@ export default function Settings() {
                       type="button"
                       variant={preferences.density === opt.value ? "default" : "outline"}
                       size="sm"
-                      onClick={() => handlePreferenceChange("density" as any, opt.value)}
+                      onClick={() => handlePreferenceChange("density", opt.value)}
                     >
                       {opt.label}
                     </Button>

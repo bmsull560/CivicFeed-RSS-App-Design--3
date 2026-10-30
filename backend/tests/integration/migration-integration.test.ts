@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { db } from "./db.js";
-import { applyMigrations, civicfeedMigrations } from "./migrations.js";
+import { db } from "@/db";
+import { applyMigrations, civicfeedMigrations } from "@/migrations";
 
 describe("Migration Chain Integration", () => {
   beforeEach(async () => {
@@ -63,7 +63,7 @@ describe("Migration Chain Integration", () => {
     const fakeMigration = {
       id: 10,
       name: "fake_migration",
-      up: (db: any) => { db.exec("CREATE TABLE fake (id INTEGER)"); };
+      up: (db: any) => db.exec("CREATE TABLE fake (id INTEGER)"),
     };
 
     // This should throw because DB is ahead of known migrations
