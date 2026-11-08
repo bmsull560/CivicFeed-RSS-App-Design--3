@@ -24,11 +24,27 @@ export function useRssFeed(feedUrl: string, feedId: string): FetchState & { refr
       const result = await fetchFeedArticles(feedId, { refresh: force });
       if (requestId !== requestIdRef.current) return;
 
-      if (result.error || result.entries.length === 0) {
+      if (result.error) {
+        // Preserve stale entries from the server when available,
+        // rather than discarding them with the initial empty state.
+        // This allows the fallback to work without prior in-memory data.
+        const preservedEntries = result.stale && result.entries.length > 0
+          ? result.entries
+          : s.entries;
+        setState({
+          status: "error",
+          entries: preservedEntries,
+          error: result.error,
+          lastFetched: s.lastFetched,
+        });
+        return;
+      }
+
+      if (result.entries.length === 0) {
         setState((s) => ({
           status: "error",
           entries: s.entries,
-          error: result.error || "No entries found",
+          error: "No entries found",
           lastFetched: s.lastFetched,
         }));
         return;
