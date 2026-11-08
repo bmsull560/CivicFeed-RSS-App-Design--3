@@ -1,0 +1,25 @@
+src/components/FeedCard.tsx(3,10): error TS1484: 'Feed' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/components/FeedCard.tsx(4,10): error TS2614: Module '"./FeedFormDialog"' has no exported member 'FeedFormDialog'. Did you mean to use 'import FeedFormDialog from "./FeedFormDialog"' instead?
+src/components/FeedCard.tsx(114,48): error TS2304: Cannot find name 'checked'.
+src/components/FeedCard.tsx(144,32): error TS7006: Parameter 'updates' implicitly has an 'any' type.
+src/components/FeedCard.tsx(145,97): error TS2304: Cannot find name 'Edit'.
+src/components/FeedCard.tsx(232,30): error TS7006: Parameter 'updates' implicitly has an 'any' type.
+src/components/FeedCard.tsx(233,95): error TS2304: Cannot find name 'Edit'.
+src/pages/Activity.tsx(374,11): error TS2322: Type '{ variant: string; action: { label: string; onClick: () => void; }; }' is not assignable to type 'IntrinsicAttributes & EmptyStateProps'.
+  Property 'variant' does not exist on type 'IntrinsicAttributes & EmptyStateProps'.
+src/pages/Activity.tsx(401,23): error TS2322: Type 'unknown' is not assignable to type 'ReactNode'.
+src/pages/Activity.tsx(403,27): error TS2322: Type '{}' is not assignable to type 'ReactNode'.
+src/pages/Activity.tsx(414,88): error TS2552: Cannot find name 'navigate'. Did you mean 'navigator'?
+src/pages/Categories.tsx(7,8): error TS2613: Module '"C:/Users/BBB/CivicFeed/CivicFeed-RSS-App-Design--3/src/components/FeedCard"' has no default export. Did you mean to use 'import { FeedCard } from "C:/Users/BBB/CivicFeed/CivicFeed-RSS-App-Design--3/src/components/FeedCard"' instead?
+src/pages/Categories.tsx(14,7): error TS6133: '_blockedCount' is declared but its value is never read.
+src/pages/Categories.tsx(122,44): error TS6133: 'enabled' is declared but its value is never read.
+src/pages/Categories.tsx(155,38): error TS2322: Type '(feedData: Omit<Feed, "id" | "status" | "userAdded" | "enabled" | "addedAt">) => void' is not assignable to type '(feed: Omit<Feed, "id" | "status" | "userAdded" | "enabled" | "addedAt">) => boolean | Promise<boolean>'.
+  Type 'void' is not assignable to type 'boolean | Promise<boolean>'.
+src/pages/Categories.tsx(190,11): error TS2322: Type '{ variant: string; action: { label: string; onClick: () => void; } | undefined; }' is not assignable to type 'IntrinsicAttributes & EmptyStateProps'.
+  Property 'variant' does not exist on type 'IntrinsicAttributes & EmptyStateProps'.
+src/pages/Categories.tsx(244,38): error TS7006: Parameter 'id' implicitly has an 'any' type.
+src/pages/Settings.tsx(6,59): error TS2724: '"../lib/userData"' has no exported member named 'clearUserData'. Did you mean 'loadUserData'?
+src/pages/Settings.tsx(41,45): error TS2339: Property 'userProfile' does not exist on type 'UserPreferences'.
+src/pages/Settings.tsx(110,7): error TS2353: Object literal may only specify known properties, and 'density' does not exist in type 'SetStateAction<UserPreferences>'.
+src/pages/Settings.tsx(205,44): error TS2339: Property 'density' does not exist on type 'UserPreferences'.
+src/pages/Settings.tsx(207,61): error TS2345: Argument of type '"density"' is not assignable to parameter of type 'keyof UserPreferences'.

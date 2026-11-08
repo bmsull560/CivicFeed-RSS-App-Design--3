@@ -1,0 +1,146 @@
+2:20:05 PM [vite] warning: `esbuild` option was specified by "vite:react-babel" plugin. This option is deprecated, please use `oxc` instead.
+2:20:05 PM [vite] warning: `optimizeDeps.esbuildOptions` option was specified by "vite:react-babel" plugin. This option is deprecated, please use `optimizeDeps.rolldownOptions` instead.
+Both esbuild and oxc options were set. oxc options will be used and esbuild options will be ignored. The following esbuild options were set: `{ jsx: 'automatic', jsxImportSource: undefined }`
+
+ RUN  v4.1.10 C:/Users/BBB/CivicFeed/CivicFeed-RSS-App-Design--3/backend
+
+ Γ¥» tests/integration/migration-integration.test.ts (0 test)
+ Γ¥» tests/integration/ingestion-integration.test.ts (0 test)
+ Γ¥» src/search.test.ts (8 tests | 2 failed) 60ms
+     ├ù finds articles by description 23ms
+     ├ù returns recent articles when query is empty 20ms
+ Γ¥» src/ai.test.ts (5 tests | 1 failed) 98ms
+     ├ù caches and retrieves enrichment results 4ms
+ Γ¥» src/recap.test.ts (3 tests | 1 failed) 129ms
+     ├ù groups recent cached articles by category and computes top tags 76ms
+ Γ¥» src/server.test.ts (14 tests | 14 skipped) 8ms
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Failed Suites 3 ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+
+ FAIL  src/server.test.ts > server
+SqliteError: UNIQUE constraint failed: feeds.id
+ Γ¥» insertTestFeed src/test-helpers.ts:26:10
+     24|     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     25|   `);
+     26|   insert.run(
+       |          ^
+     27|     id,
+     28|     overrides.name ?? `Test Feed ${feedCounter}`,
+ Γ¥» src/server.test.ts:11:5
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[1/7]ΓÄ»
+
+ FAIL  tests/integration/ingestion-integration.test.ts [ tests/integration/ingestion-integration.test.ts ]
+Error: Cannot find module './db.js' imported from C:/Users/BBB/CivicFeed/CivicFeed-RSS-App-Design--3/backend/tests/integration/ingestion-integration.test.ts
+ Γ¥» tests/integration/ingestion-integration.test.ts:2:1
+      1| import { describe, it, expect, beforeEach, afterEach } from "vitest";
+      2| import { db } from "./db.js";
+       | ^
+      3| import { insertTestFeed, makeEntry } from "./test-helpers.js";
+      4| import { applyMigrations, civicfeedMigrations } from "./migrations.js";
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[2/7]ΓÄ»
+
+ FAIL  tests/integration/migration-integration.test.ts [ tests/integration/migration-integration.test.ts ]
+Error: Transform failed with 1 error:
+
+[PARSE_ERROR] Expected `,` or `}` but found `;`
+    Γò¡ΓöÇ[ tests/integration/migration-integration.test.ts:66:70 ]
+    Γöé
+ 63 Γöé     const fakeMigration = {
+    Γöé                           Γö¼  
+    Γöé                           Γò░ΓöÇΓöÇ Opened here
+    Γöé 
+ 66 Γöé       up: (db: any) => { db.exec("CREATE TABLE fake (id INTEGER)"); };
+    Γöé                                                                      Γö¼  
+    Γöé                                                                      Γò░ΓöÇΓöÇ `,` or `}` expected
+ΓöÇΓöÇΓöÇΓöÇΓò»
+
+  Plugin: vite:oxc
+  File: C:/Users/BBB/CivicFeed/CivicFeed-RSS-App-Design--3/backend/tests/integration/migration-integration.test.ts
+ Γ¥» transformWithOxc node_modules/vite/dist/node/chunks/node.js:4017:19
+ Γ¥» TransformPluginContext.transform node_modules/vite/dist/node/chunks/node.js:4088:26
+ Γ¥» EnvironmentPluginContainer.transform node_modules/vite/dist/node/chunks/node.js:30151:51
+ Γ¥» loadAndTransform node_modules/vite/dist/node/chunks/node.js:20098:26
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[3/7]ΓÄ»
+
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Failed Tests 4 ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+
+ FAIL  src/ai.test.ts > ai enrichment > caches and retrieves enrichment results
+SqliteError: UNIQUE constraint failed: feeds.id
+ Γ¥» insertTestFeed src/test-helpers.ts:26:10
+     24|     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     25|   `);
+     26|   insert.run(
+       |          ^
+     27|     id,
+     28|     overrides.name ?? `Test Feed ${feedCounter}`,
+ Γ¥» src/ai.test.ts:30:20
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[4/7]ΓÄ»
+
+ FAIL  src/recap.test.ts > recap > groups recent cached articles by category and computes top tags
+AssertionError: expected +0 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 0
+
+ Γ¥» src/recap.test.ts:61:33
+     59|     const recap = generateRecap(7);
+     60|
+     61|     expect(recap.totalArticles).toBe(3);
+       |                                 ^
+     62|     expect(recap.categories).toHaveLength(2);
+     63|     expect(recap.categories[0].category).toBe("Category A");
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[5/7]ΓÄ»
+
+ FAIL  src/search.test.ts > search > finds articles by description
+AssertionError: expected [ { entryId: 'e1', ΓÇª(10) }, ΓÇª(1) ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ Γ¥» src/search.test.ts:45:21
+     43|
+     44|     const results = searchArticles("bridges");
+     45|     expect(results).toHaveLength(1);
+       |                     ^
+     46|     expect(results[0].entryId).toBe("e1");
+     47|   });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[6/7]ΓÄ»
+
+ FAIL  src/search.test.ts > search > returns recent articles when query is empty
+AssertionError: expected [ { entryId: 'e1', ΓÇª(10) }, ΓÇª(3) ] to have a length of 1 but got 4
+
+- Expected
++ Received
+
+- 1
++ 4
+
+ Γ¥» src/search.test.ts:64:20
+     62|
+     63|     const recent = getRecentArticles(10);
+     64|     expect(recent).toHaveLength(1);
+       |                    ^
+     65|     expect(recent[0].entryId).toBe("e1");
+     66|   });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[7/7]ΓÄ»
+
+
+ Test Files  6 failed | 9 passed (15)
+      Tests  4 failed | 113 passed | 14 skipped (131)
+   Start at  14:20:05
+   Duration  4.48s (transform 3.41s, setup 0ms, import 5.03s, tests 7.12s, environment 2ms)
+

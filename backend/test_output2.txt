@@ -1,0 +1,436 @@
+
+ RUN  v4.1.10 C:/Users/BBB/CivicFeed/CivicFeed-RSS-App-Design--3/backend
+
+ Γ£ô src/logger.test.ts > logger > writes structured JSON logs 8ms
+ Γ£ô src/logger.test.ts > logger > serializes errors 4ms
+ Γ£ô src/logger.test.ts > logger > respects CIVICFEED_LOG_LEVEL=silent 1ms
+ Γ£ô src/apply-feed-statuses.test.ts > parseReport > accepts a well-formed report 4ms
+ Γ£ô src/apply-feed-statuses.test.ts > parseReport > rejects a report without a results array 2ms
+ Γ£ô src/apply-feed-statuses.test.ts > parseReport > rejects a report missing validatedAt 1ms
+ Γ£ô src/apply-feed-statuses.test.ts > parseReport > fails closed on old-schema results without operationalStatus 1ms
+ Γ£ô src/apply-feed-statuses.test.ts > parseReport > rejects unknown operationalStatus values 1ms
+ Γ£ô src/apply-feed-statuses.test.ts > planStatusUpdates > applies a genuine permanent failure as blocked 1ms
+ Γ£ô src/apply-feed-statuses.test.ts > planStatusUpdates > applies a genuine unsupported-format failure as blocked 0ms
+ Γ£ô src/apply-feed-statuses.test.ts > planStatusUpdates > preserves a working feed on a DVIDS-style WAF challenge (202 + HTML) 1ms
+ Γ£ô src/apply-feed-statuses.test.ts > planStatusUpdates > preserves a working feed on a 403 challenge 0ms
+ Γ£ô src/apply-feed-statuses.test.ts > planStatusUpdates > preserves a working feed on transient failures 0ms
+ Γ£ô src/apply-feed-statuses.test.ts > planStatusUpdates > recovers a blocked feed to working on a healthy observation 0ms
+ Γ£ô src/apply-feed-statuses.test.ts > planStatusUpdates > ignores observations for feeds not in the catalog 0ms
+ Γ£ô src/apply-feed-statuses.test.ts > exceedsMassChangeGuard > allows small transition sets 0ms
+ Γ£ô src/apply-feed-statuses.test.ts > exceedsMassChangeGuard > flags anomalously large transition sets 0ms
+ Γ£ô src/apply-feed-statuses.test.ts > applyPlanToSource > applies status changes and recomputes byStatus 8ms
+ Γ£ô src/apply-feed-statuses.test.ts > applyPlanToSource > leaves the source untouched when there are no changes 0ms
+ Γ£ô src/apply-feed-statuses.test.ts > summarizePlan > counts transitions, preservations, and unchanged feeds 0ms
+ Γ£ô src/migrations.test.ts > migrations > applies all civicfeed migrations on a fresh database 20ms
+ Γ£ô src/migrations.test.ts > migrations > is idempotent 6ms
+ Γ£ô src/migrations.test.ts > migrations > applies new migrations in order 1ms
+ Γ£ô src/migrations.test.ts > migrations > refuses to run when the database is ahead of the application code 2ms
+ Γ£ô src/migrations.test.ts > migrations > logs applied migrations 3ms
+ Γ£ô src/migrations.test.ts > migrations > rebuilds a contentless article_search table 3ms
+ Γ£ô src/migrations.test.ts > migrations > populates article_search from existing article_cache 4ms
+ Γ£ô src/rss.test.ts > parseRssXml > parses a standard RSS 2.0 feed 10ms
+ Γ£ô src/rss.test.ts > parseRssXml > parses an Atom feed 1ms
+ Γ£ô src/rss.test.ts > parseRssXml > parses an RDF feed 1ms
+ Γ£ô src/rss.test.ts > parseRssXml > returns an empty array for invalid XML 1ms
+ Γ£ô src/rss.test.ts > parseRssXml > returns an empty array when no items are present 1ms
+ Γ£ô src/rss.test.ts > parseRssXml > generates an entry id when guid is missing 1ms
+ Γ£ô src/rss.test.ts > parseRssXml > skips entries that have neither title nor link 1ms
+ Γ£ô src/url-security.test.ts > assertSafeUrl > accepts a public HTTPS URL 250ms
+ Γ£ô src/cache.test.ts > cache > returns null when no articles are cached for a feed 4ms
+ Γ£ô src/cache.test.ts > cache > saves and retrieves cached articles 6ms
+ Γ£ô src/cache.test.ts > cache > does not return stale cached articles 2ms
+ Γ£ô src/cache.test.ts > cache > replaces existing entries with the same id 2ms
+ Γ£ô src/search.test.ts > search > returns empty results for an empty query 4ms
+ Γ£ô src/search.test.ts > search > returns empty results when no articles match 3ms
+ Γ£ô src/search.test.ts > search > finds articles by title 3ms
+ Γ£ô src/search.test.ts > search > finds articles by description 2ms
+ Γ£ô src/search.test.ts > search > limits the number of results 3ms
+ Γ£ô src/search.test.ts > search > returns recent articles when query is empty 2ms
+ Γ£ô src/search.test.ts > search > respects offset when searching 1ms
+ Γ£ô src/search.test.ts > search > respects offset for recent articles 1ms
+ Γ£ô src/feed-validator.test.ts > classifyFeedType > classifies weather/safety as alert 3ms
+ Γ£ô src/feed-validator.test.ts > classifyFeedType > classifies oral arguments as event 0ms
+ Γ£ô src/feed-validator.test.ts > classifyFeedType > classifies archive content as archive 0ms
+ Γ£ô src/feed-validator.test.ts > classifyFeedType > classifies quarterly updates as low_frequency 0ms
+ Γ£ô src/feed-validator.test.ts > classifyFeedType > defaults to news 0ms
+ Γ£ô src/feed-validator.test.ts > classifyFormat > detects RSS 0ms
+ Γ£ô src/feed-validator.test.ts > classifyFormat > detects Atom 0ms
+ Γ£ô src/feed-validator.test.ts > classifyFormat > detects RDF RSS 0ms
+ Γ£ô src/feed-validator.test.ts > classifyFormat > returns Unknown for HTML 0ms
+ Γ£ô src/feed-validator.test.ts > normalizeCanonicalUrl > lowercases host and strips trailing slash 0ms
+ Γ£ô src/feed-validator.test.ts > normalizeCanonicalUrl > removes hash 0ms
+ Γ£ô src/feed-validator.test.ts > evaluateParse > parses valid RSS 5ms
+ Γ£ô src/feed-validator.test.ts > evaluateParse > parses valid Atom 1ms
+ Γ£ô src/feed-validator.test.ts > evaluateParse > parses valid RDF RSS 1ms
+ Γ£ô src/feed-validator.test.ts > evaluateParse > reports empty feeds 0ms
+ Γ£ô src/feed-validator.test.ts > evaluateParse > reports unparseable content 0ms
+ Γ£ô src/feed-validator.test.ts > evaluateFreshness > flags stale news 0ms
+ Γ£ô src/feed-validator.test.ts > evaluateFreshness > accepts current news 0ms
+ Γ£ô src/feed-validator.test.ts > evaluateFreshness > accepts old archive feeds 0ms
+ Γ£ô src/feed-validator.test.ts > evaluateFreshness > allows future event dates 0ms
+ Γ£ô src/feed-validator.test.ts > evaluateFreshness > flags future-dated news 0ms
+ Γ£ô src/feed-validator.test.ts > fetchWithReliability > returns successful response 39ms
+ Γ£ô src/recap.test.ts > recap > returns an empty recap when no recent articles exist 6ms
+ Γ£ô src/recap.test.ts > recap > groups recent cached articles by category and computes top tags 85ms
+ Γ£ô src/recap.test.ts > recap > excludes articles older than the requested window 1ms
+ Γ£ô src/ai.test.ts > ai enrichment > falls back to an extractive summary when no AI provider is available 84ms
+ Γ£ô src/ai.test.ts > ai enrichment > caches and retrieves enrichment results 6ms
+ Γ£ô src/ai.test.ts > ai enrichment > returns cached enrichment without recomputing 7ms
+ Γ£ô src/ai.test.ts > ai enrichment > extracts keywords from article text 6ms
+ Γ£ô src/ai.test.ts > ai enrichment > strips HTML from descriptions before summarizing 4ms
+ Γ£ô src/url-security.test.ts > assertSafeUrl > rejects malformed URLs 2ms
+ Γ£ô src/url-security.test.ts > assertSafeUrl > rejects non-HTTP protocols 0ms
+ Γ£ô src/url-security.test.ts > assertSafeUrl > rejects URLs containing credentials 0ms
+ Γ£ô src/url-security.test.ts > assertSafeUrl > rejects loopback IPv4 addresses 0ms
+ Γ£ô src/url-security.test.ts > assertSafeUrl > rejects loopback IPv6 addresses 8ms
+ Γ£ô src/url-security.test.ts > assertSafeUrl > rejects private IPv4 ranges 1ms
+ Γ£ô src/url-security.test.ts > assertSafeUrl > rejects link-local / cloud metadata addresses 1ms
+ Γ£ô src/discovery.test.ts > discoverFeeds > returns RSS and Atom links discovered from HTML 298ms
+ Γ£ô src/feed-validator.test.ts > fetchWithReliability > retries 500 errors 85ms
+ Γ£ô src/feed-validator.test.ts > fetchWithReliability > does not retry 404 errors 1ms
+ Γ£ô src/feed-validator.test.ts > fetchWithReliability > retries transient timeouts 45ms
+ Γ£ô src/url-security.test.ts > assertSafeUrl > rejects hostnames that resolve to private addresses 266ms
+ ├ù src/server.test.ts > server > GET /api/health returns ok with database check 32ms
+   ΓåÆ expected 404 to be 200 // Object.is equality
+ ├ù src/server.test.ts > server > GET /api/ready returns ready when database is accessible 7ms
+   ΓåÆ expected 404 to be 200 // Object.is equality
+ ├ù src/server.test.ts > server > GET /api/feeds lists seeded feeds 4ms
+   ΓåÆ expected 404 to be 200 // Object.is equality
+ ├ù src/server.test.ts > server > GET /api/feeds/:id returns a single feed 6ms
+   ΓåÆ expected 500 to be 200 // Object.is equality
+ ├ù src/server.test.ts > server > GET /api/feeds/:id returns 404 for unknown feed 7ms
+   ΓåÆ expected 500 to be 404 // Object.is equality
+ Γ£ô src/feed-validator.test.ts > fetchWithReliability > passes the configured timeout through to the abort signal 60ms
+ Γ£ô src/feed-validator.test.ts > fetchWithReliability > respects per-host concurrency 127ms
+ Γ£ô src/feed-validator.test.ts > validateFeeds > makes only GET requests, resolving canonical URLs from the response 4ms
+ Γ£ô src/feed-validator.test.ts > validateFeeds > detects empty feeds 1ms
+ Γ£ô src/feed-validator.test.ts > validateFeeds > handles HTTP 200 with HTML 1ms
+ Γ£ô src/feed-validator.test.ts > validateFeeds > handles HTTP 403 0ms
+ Γ£ô src/feed-validator.test.ts > validateFeeds > handles HTTP 404 0ms
+ Γ£ô src/feed-validator.test.ts > validateFeeds > handles connection failure 2ms
+ Γ£ô src/feed-validator.test.ts > validateFeeds > handles malformed XML 1ms
+ Γ£ô src/feed-validator.test.ts > validateFeeds > detects stale news feeds 1ms
+ Γ£ô src/feed-validator.test.ts > validateFeeds > allows valid archive feeds to be old 1ms
+ Γ£ô src/feed-validator.test.ts > validateFeeds > detects duplicates across categories 14ms
+ Γ£ô src/feed-validator.test.ts > validateFeeds > produces deterministic sorted output 1ms
+ Γ£ô src/feed-validator.test.ts > validateFeeds > sends conditional headers and inherits previous parse state on 304 1ms
+ Γ£ô src/feed-validator.test.ts > validateFeeds > classifies malformed catalog URLs as unsafe_url instead of aborting the run 1ms
+ Γ£ô src/feed-validator.test.ts > validateFeeds > classifies SSRF-rejected URLs as unsafe_url 1ms
+ Γ£ô src/url-security.test.ts > assertSafeUrl > rejects blocked ports 1ms
+ Γ£ô src/discovery.test.ts > discoverFeeds > returns an empty array when no alternate links are present 242ms
+ Γ£ô src/scheduler.test.ts > scheduler > refreshes due feeds, records success, and caches articles 283ms
+ Γ£ô src/discovery.test.ts > discoverFeeds > returns an empty array when the target returns an error 245ms
+ Γ£ô src/url-security.test.ts > guardedFetch > returns body for a successful response 284ms
+ Γ£ô src/discovery.test.ts > discoverFeeds > deduplicates discovered URLs 245ms
+ Γ£ô src/url-security.test.ts > guardedFetch > follows safe redirects up to the limit 514ms
+ Γ£ô src/url-security.test.ts > guardedFetch > rejects redirects that target private hosts 277ms
+ Γ£ô src/scheduler.test.ts > scheduler > records failures for unreachable feeds 1292ms
+ Γ£ô src/url-security.test.ts > guardedFetch > fails after too many redirects 1597ms
+ Γ£ô src/url-security.test.ts > guardedFetch > truncates responses that exceed the size limit 281ms
+ Γ£ô src/url-security.test.ts > guardedFetch > surfaces HTTP errors 253ms
+ ├ù src/server.test.ts > server > GET /api/feeds/:id/articles fetches articles and enriches them asynchronously 5004ms
+   ΓåÆ Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ├ù src/server.test.ts > server > GET /api/search returns results 7ms
+   ΓåÆ expected 404 to be 200 // Object.is equality
+ Γ£ô src/server.test.ts > server > GET /api/stats/cache returns counts 3ms
+ ├ù src/server.test.ts > server > GET /api/recap returns a recap 5ms
+   ΓåÆ expected 404 to be 200 // Object.is equality
+ Γ£ô src/server.test.ts > server > feed status and stats > GET /api/feeds/:id/status returns defaults when never fetched 8ms
+ ├ù src/server.test.ts > server > feed status and stats > GET /api/feeds/:id/status reflects a successful fetch 5004ms
+   ΓåÆ Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ├ù src/server.test.ts > server > feed status and stats > GET /api/feeds/:id/status reflects a failed fetch 5016ms
+   ΓåÆ Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ Γ£ô src/server.test.ts > server > feed status and stats > GET /api/feeds/:id/status returns 404 for unknown feed 6ms
+ Γ£ô src/server.test.ts > server > feed status and stats > GET /api/stats/feeds returns aggregate counts 3ms
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Failed Suites 2 ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+
+ FAIL  tests/integration/ingestion-integration.test.ts [ tests/integration/ingestion-integration.test.ts ]
+Error: Cannot find module './db.ts' imported from C:/Users/BBB/CivicFeed/CivicFeed-RSS-App-Design--3/backend/tests/integration/ingestion-integration.test.ts
+ Γ¥» tests/integration/ingestion-integration.test.ts:2:1
+      1| import { describe, it, expect, beforeEach, afterEach } from "vitest";
+      2| import { db } from "./db.ts";
+       | ^
+      3| import { insertTestFeed, makeEntry } from "./test-helpers.ts";
+      4| import { civicfeedMigrations } from "./migrations.ts";
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+Serialized Error: { code: 'ERR_MODULE_NOT_FOUND' }
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[1/12]ΓÄ»
+
+ FAIL  tests/integration/migration-integration.test.ts [ tests/integration/migration-integration.test.ts ]
+Error: Cannot find module './db.ts' imported from C:/Users/BBB/CivicFeed/CivicFeed-RSS-App-Design--3/backend/tests/integration/migration-integration.test.ts
+ Γ¥» tests/integration/migration-integration.test.ts:2:1
+      1| import { describe, it, expect, beforeEach, afterEach } from "vitest";
+      2| import { db } from "./db.ts";
+       | ^
+      3| import { applyMigrations, civicfeedMigrations } from "./migrations.ts";
+      4|
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+Serialized Error: { code: 'ERR_MODULE_NOT_FOUND' }
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[2/12]ΓÄ»
+
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Failed Tests 10 ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+
+ FAIL  src/server.test.ts > server > GET /api/health returns ok with database check
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ Γ¥» src/server.test.ts:20:24
+     18|   it("GET /api/health returns ok with database check", async () => {
+     19|     const res = await request(app).get("/api/health");
+     20|     expect(res.status).toBe(200);
+       |                        ^
+     21|     expect(res.body.status).toBe("ok");
+     22|     expect(res.body.timestamp).toBeDefined();
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[3/12]ΓÄ»
+
+ FAIL  src/server.test.ts > server > GET /api/ready returns ready when database is accessible
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ Γ¥» src/server.test.ts:30:24
+     28|   it("GET /api/ready returns ready when database is accessible", asyncΓÇª
+     29|     const res = await request(app).get("/api/ready");
+     30|     expect(res.status).toBe(200);
+       |                        ^
+     31|     expect(res.body.ready).toBe(true);
+     32|     expect(res.body.timestamp).toBeDefined();
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[4/12]ΓÄ»
+
+ FAIL  src/server.test.ts > server > GET /api/feeds lists seeded feeds
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ Γ¥» src/server.test.ts:37:24
+     35|   it("GET /api/feeds lists seeded feeds", async () => {
+     36|     const res = await request(app).get("/api/feeds");
+     37|     expect(res.status).toBe(200);
+       |                        ^
+     38|     expect(Array.isArray(res.body.feeds)).toBe(true);
+     39|     expect(res.body.feeds.some((f: { id: string }) => f.id === "feed-sΓÇª
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[5/12]ΓÄ»
+
+ FAIL  src/server.test.ts > server > GET /api/feeds/:id returns a single feed
+AssertionError: expected 500 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 500
+
+ Γ¥» src/server.test.ts:44:24
+     42|   it("GET /api/feeds/:id returns a single feed", async () => {
+     43|     const res = await request(app).get("/api/feeds/feed-server");
+     44|     expect(res.status).toBe(200);
+       |                        ^
+     45|     expect(res.body.id).toBe("feed-server");
+     46|   });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[6/12]ΓÄ»
+
+ FAIL  src/server.test.ts > server > GET /api/feeds/:id returns 404 for unknown feed
+AssertionError: expected 500 to be 404 // Object.is equality
+
+- Expected
++ Received
+
+- 404
++ 500
+
+ Γ¥» src/server.test.ts:50:24
+     48|   it("GET /api/feeds/:id returns 404 for unknown feed", async () => {
+     49|     const res = await request(app).get("/api/feeds/does-not-exist");
+     50|     expect(res.status).toBe(404);
+       |                        ^
+     51|   });
+     52|
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[7/12]ΓÄ»
+
+ FAIL  src/server.test.ts > server > GET /api/feeds/:id/articles fetches articles and enriches them asynchronously
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ Γ¥» src/server.test.ts:53:3
+     51|   });
+     52|
+     53|   it("GET /api/feeds/:id/articles fetches articles and enriches them aΓÇª
+       |   ^
+     54|     const xml = `<?xml version="1.0"?>
+     55| <rss version="2.0">
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[8/12]ΓÄ»
+
+ FAIL  src/server.test.ts > server > GET /api/search returns results
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ Γ¥» src/server.test.ts:94:24
+     92|
+     93|     const res = await request(app).get("/api/search?q=Searchable");
+     94|     expect(res.status).toBe(200);
+       |                        ^
+     95|     expect(res.body.results).toHaveLength(1);
+     96|     expect(res.body.results[0].entryId).toBe("searchable");
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[9/12]ΓÄ»
+
+ FAIL  src/server.test.ts > server > GET /api/recap returns a recap
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ Γ¥» src/server.test.ts:112:24
+    110|
+    111|     const res = await request(app).get("/api/recap?days=7");
+    112|     expect(res.status).toBe(200);
+       |                        ^
+    113|     expect(res.body.totalArticles).toBeGreaterThanOrEqual(1);
+    114|     expect(Array.isArray(res.body.categories)).toBe(true);
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[10/12]ΓÄ»
+
+ FAIL  src/server.test.ts > server > feed status and stats > GET /api/feeds/:id/status reflects a successful fetch
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ Γ¥» src/server.test.ts:146:5
+    144|     });
+    145|
+    146|     it("GET /api/feeds/:id/status reflects a successful fetch", async ΓÇª
+       |     ^
+    147|       const xml = `<?xml version="1.0"?>
+    148| <rss version="2.0">
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[11/12]ΓÄ»
+
+ FAIL  src/server.test.ts > server > feed status and stats > GET /api/feeds/:id/status reflects a failed fetch
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ Γ¥» src/server.test.ts:179:5
+    177|     });
+    178|
+    179|     it("GET /api/feeds/:id/status reflects a failed fetch", async () =ΓÇª
+       |     ^
+    180|       vi.stubGlobal(
+    181|         "fetch",
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[12/12]ΓÄ»
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Unhandled Errors ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+
+Vitest caught 3 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ» Unhandled Rejection ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ReferenceError: fetchFeed is not defined
+ Γ¥» src/articlesRouter.ts:42:22
+     40|     } else {
+     41|       // Fetch fresh
+     42|       const result = await fetchFeed(feedRow.rss_url, feedId, feedRow.ΓÇª
+       |                      ^
+     43|       if (result.error) {
+     44|         return res.status(502).json({ entries: [], cached: false, erroΓÇª
+ Γ¥» Layer.handle [as handle_request] node_modules/express/lib/router/layer.js:95:5
+ Γ¥» next node_modules/express/lib/router/route.js:149:13
+ Γ¥» Route.dispatch node_modules/express/lib/router/route.js:119:3
+ Γ¥» Layer.handle [as handle_request] node_modules/express/lib/router/layer.js:95:5
+ Γ¥» node_modules/express/lib/router/index.js:284:15
+ Γ¥» param node_modules/express/lib/router/index.js:365:14
+ Γ¥» param node_modules/express/lib/router/index.js:376:14
+ Γ¥» router.process_params node_modules/express/lib/router/index.js:421:3
+ Γ¥» next node_modules/express/lib/router/index.js:280:10
+
+This error originated in "src/server.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "GET /api/feeds/:id/articles fetches articles and enriches them asynchronously". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ» Unhandled Rejection ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ReferenceError: fetchFeed is not defined
+ Γ¥» src/articlesRouter.ts:42:22
+     40|     } else {
+     41|       // Fetch fresh
+     42|       const result = await fetchFeed(feedRow.rss_url, feedId, feedRow.ΓÇª
+       |                      ^
+     43|       if (result.error) {
+     44|         return res.status(502).json({ entries: [], cached: false, erroΓÇª
+ Γ¥» Layer.handle [as handle_request] node_modules/express/lib/router/layer.js:95:5
+ Γ¥» next node_modules/express/lib/router/route.js:149:13
+ Γ¥» Route.dispatch node_modules/express/lib/router/route.js:119:3
+ Γ¥» Layer.handle [as handle_request] node_modules/express/lib/router/layer.js:95:5
+ Γ¥» node_modules/express/lib/router/index.js:284:15
+ Γ¥» param node_modules/express/lib/router/index.js:365:14
+ Γ¥» param node_modules/express/lib/router/index.js:376:14
+ Γ¥» router.process_params node_modules/express/lib/router/index.js:421:3
+ Γ¥» next node_modules/express/lib/router/index.js:280:10
+
+This error originated in "src/server.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "GET /api/feeds/:id/status reflects a successful fetch". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ» Unhandled Rejection ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ReferenceError: fetchFeed is not defined
+ Γ¥» src/articlesRouter.ts:42:22
+     40|     } else {
+     41|       // Fetch fresh
+     42|       const result = await fetchFeed(feedRow.rss_url, feedId, feedRow.ΓÇª
+       |                      ^
+     43|       if (result.error) {
+     44|         return res.status(502).json({ entries: [], cached: false, erroΓÇª
+ Γ¥» Layer.handle [as handle_request] node_modules/express/lib/router/layer.js:95:5
+ Γ¥» next node_modules/express/lib/router/route.js:149:13
+ Γ¥» Route.dispatch node_modules/express/lib/router/route.js:119:3
+ Γ¥» Layer.handle [as handle_request] node_modules/express/lib/router/layer.js:95:5
+ Γ¥» node_modules/express/lib/router/index.js:284:15
+ Γ¥» param node_modules/express/lib/router/index.js:365:14
+ Γ¥» param node_modules/express/lib/router/index.js:376:14
+ Γ¥» router.process_params node_modules/express/lib/router/index.js:421:3
+ Γ¥» next node_modules/express/lib/router/index.js:280:10
+
+This error originated in "src/server.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "GET /api/feeds/:id/status reflects a failed fetch". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+
+
+ Test Files  3 failed | 12 passed (15)
+      Tests  10 failed | 121 passed (131)
+     Errors  3 errors
+   Start at  14:00:12
+   Duration  16.66s (transform 3.17s, setup 0ms, import 4.79s, tests 22.21s, environment 2ms)
+

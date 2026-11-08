@@ -1,0 +1,297 @@
+2:20:19 PM [vite] warning: `esbuild` option was specified by "vite:react-babel" plugin. This option is deprecated, please use `oxc` instead.
+2:20:19 PM [vite] warning: `optimizeDeps.esbuildOptions` option was specified by "vite:react-babel" plugin. This option is deprecated, please use `optimizeDeps.rolldownOptions` instead.
+Both esbuild and oxc options were set. oxc options will be used and esbuild options will be ignored. The following esbuild options were set: `{ jsx: 'automatic', jsxImportSource: undefined }`
+
+ RUN  v4.1.10 C:/Users/BBB/CivicFeed/CivicFeed-RSS-App-Design--3/backend
+
+ Γ¥» tests/integration/migration-integration.test.ts (0 test)
+ Γ¥» tests/integration/ingestion-integration.test.ts (0 test)
+ Γ¥» src/search.test.ts (8 tests | 5 failed) 22ms
+     ├ù returns empty results when no articles match 7ms
+     ├ù finds articles by title 2ms
+     ├ù finds articles by description 1ms
+     ├ù limits the number of results 1ms
+     ├ù returns recent articles when query is empty 1ms
+ Γ¥» src/cache.test.ts (4 tests | 4 failed) 23ms
+     ├ù returns null when no articles are cached for a feed 17ms
+     ├ù saves and retrieves cached articles 2ms
+     ├ù does not return stale cached articles 1ms
+     ├ù replaces existing entries with the same id 1ms
+ Γ¥» src/ai.test.ts (5 tests | 5 failed) 37ms
+     ├ù falls back to an extractive summary when no AI provider is available 9ms
+     ├ù caches and retrieves enrichment results 20ms
+     ├ù returns cached enrichment without recomputing 2ms
+     ├ù extracts keywords from article text 2ms
+     ├ù strips HTML from descriptions before summarizing 2ms
+ Γ¥» src/recap.test.ts (3 tests | 2 failed) 58ms
+     ├ù groups recent cached articles by category and computes top tags 7ms
+     ├ù excludes articles older than the requested window 1ms
+ Γ¥» src/server.test.ts (14 tests | 14 skipped) 5ms
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Failed Suites 3 ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+
+ FAIL  src/server.test.ts > server
+SqliteError: UNIQUE constraint failed: feeds.id
+ Γ¥» insertTestFeed src/test-helpers.ts:26:10
+     24|     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     25|   `);
+     26|   insert.run(
+       |          ^
+     27|     id,
+     28|     overrides.name ?? `Test Feed ${feedCounter}`,
+ Γ¥» src/server.test.ts:11:5
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[1/19]ΓÄ»
+
+ FAIL  tests/integration/ingestion-integration.test.ts [ tests/integration/ingestion-integration.test.ts ]
+Error: Cannot find module './db.js' imported from C:/Users/BBB/CivicFeed/CivicFeed-RSS-App-Design--3/backend/tests/integration/ingestion-integration.test.ts
+ Γ¥» tests/integration/ingestion-integration.test.ts:2:1
+      1| import { describe, it, expect, beforeEach, afterEach } from "vitest";
+      2| import { db } from "./db.js";
+       | ^
+      3| import { insertTestFeed, makeEntry } from "./test-helpers.js";
+      4| import { applyMigrations, civicfeedMigrations } from "./migrations.js";
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[2/19]ΓÄ»
+
+ FAIL  tests/integration/migration-integration.test.ts [ tests/integration/migration-integration.test.ts ]
+Error: Transform failed with 1 error:
+
+[PARSE_ERROR] Expected `,` or `}` but found `;`
+    Γò¡ΓöÇ[ tests/integration/migration-integration.test.ts:66:70 ]
+    Γöé
+ 63 Γöé     const fakeMigration = {
+    Γöé                           Γö¼  
+    Γöé                           Γò░ΓöÇΓöÇ Opened here
+    Γöé 
+ 66 Γöé       up: (db: any) => { db.exec("CREATE TABLE fake (id INTEGER)"); };
+    Γöé                                                                      Γö¼  
+    Γöé                                                                      Γò░ΓöÇΓöÇ `,` or `}` expected
+ΓöÇΓöÇΓöÇΓöÇΓò»
+
+  Plugin: vite:oxc
+  File: C:/Users/BBB/CivicFeed/CivicFeed-RSS-App-Design--3/backend/tests/integration/migration-integration.test.ts
+ Γ¥» transformWithOxc node_modules/vite/dist/node/chunks/node.js:4017:19
+ Γ¥» TransformPluginContext.transform node_modules/vite/dist/node/chunks/node.js:4088:26
+ Γ¥» EnvironmentPluginContainer.transform node_modules/vite/dist/node/chunks/node.js:30151:51
+ Γ¥» loadAndTransform node_modules/vite/dist/node/chunks/node.js:20098:26
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[3/19]ΓÄ»
+
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Failed Tests 16 ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+
+ FAIL  src/ai.test.ts > ai enrichment > falls back to an extractive summary when no AI provider is available
+SqliteError: UNIQUE constraint failed: feeds.id
+ Γ¥» insertTestFeed src/test-helpers.ts:26:10
+     24|     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     25|   `);
+     26|   insert.run(
+       |          ^
+     27|     id,
+     28|     overrides.name ?? `Test Feed ${feedCounter}`,
+ Γ¥» src/ai.test.ts:15:20
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[4/19]ΓÄ»
+
+ FAIL  src/ai.test.ts > ai enrichment > caches and retrieves enrichment results
+SqliteError: UNIQUE constraint failed: feeds.id
+ Γ¥» insertTestFeed src/test-helpers.ts:26:10
+     24|     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     25|   `);
+     26|   insert.run(
+       |          ^
+     27|     id,
+     28|     overrides.name ?? `Test Feed ${feedCounter}`,
+ Γ¥» src/ai.test.ts:30:20
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[5/19]ΓÄ»
+
+ FAIL  src/ai.test.ts > ai enrichment > returns cached enrichment without recomputing
+SqliteError: UNIQUE constraint failed: feeds.id
+ Γ¥» insertTestFeed src/test-helpers.ts:26:10
+     24|     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     25|   `);
+     26|   insert.run(
+       |          ^
+     27|     id,
+     28|     overrides.name ?? `Test Feed ${feedCounter}`,
+ Γ¥» src/ai.test.ts:47:20
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[6/19]ΓÄ»
+
+ FAIL  src/ai.test.ts > ai enrichment > extracts keywords from article text
+SqliteError: UNIQUE constraint failed: feeds.id
+ Γ¥» insertTestFeed src/test-helpers.ts:26:10
+     24|     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     25|   `);
+     26|   insert.run(
+       |          ^
+     27|     id,
+     28|     overrides.name ?? `Test Feed ${feedCounter}`,
+ Γ¥» src/ai.test.ts:63:20
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[7/19]ΓÄ»
+
+ FAIL  src/ai.test.ts > ai enrichment > strips HTML from descriptions before summarizing
+SqliteError: UNIQUE constraint failed: feeds.id
+ Γ¥» insertTestFeed src/test-helpers.ts:26:10
+     24|     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     25|   `);
+     26|   insert.run(
+       |          ^
+     27|     id,
+     28|     overrides.name ?? `Test Feed ${feedCounter}`,
+ Γ¥» src/ai.test.ts:76:20
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[8/19]ΓÄ»
+
+ FAIL  src/cache.test.ts > cache > returns null when no articles are cached for a feed
+SqliteError: UNIQUE constraint failed: feeds.id
+ Γ¥» insertTestFeed src/test-helpers.ts:26:10
+     24|     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     25|   `);
+     26|   insert.run(
+       |          ^
+     27|     id,
+     28|     overrides.name ?? `Test Feed ${feedCounter}`,
+ Γ¥» src/cache.test.ts:13:5
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[9/19]ΓÄ»
+
+ FAIL  src/cache.test.ts > cache > saves and retrieves cached articles
+SqliteError: UNIQUE constraint failed: feeds.id
+ Γ¥» insertTestFeed src/test-helpers.ts:26:10
+     24|     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     25|   `);
+     26|   insert.run(
+       |          ^
+     27|     id,
+     28|     overrides.name ?? `Test Feed ${feedCounter}`,
+ Γ¥» src/cache.test.ts:18:20
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[10/19]ΓÄ»
+
+ FAIL  src/cache.test.ts > cache > does not return stale cached articles
+SqliteError: UNIQUE constraint failed: feeds.id
+ Γ¥» insertTestFeed src/test-helpers.ts:26:10
+     24|     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     25|   `);
+     26|   insert.run(
+       |          ^
+     27|     id,
+     28|     overrides.name ?? `Test Feed ${feedCounter}`,
+ Γ¥» src/cache.test.ts:37:20
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[11/19]ΓÄ»
+
+ FAIL  src/cache.test.ts > cache > replaces existing entries with the same id
+SqliteError: UNIQUE constraint failed: feeds.id
+ Γ¥» insertTestFeed src/test-helpers.ts:26:10
+     24|     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     25|   `);
+     26|   insert.run(
+       |          ^
+     27|     id,
+     28|     overrides.name ?? `Test Feed ${feedCounter}`,
+ Γ¥» src/cache.test.ts:46:20
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[12/19]ΓÄ»
+
+ FAIL  src/recap.test.ts > recap > groups recent cached articles by category and computes top tags
+SqliteError: UNIQUE constraint failed: feeds.id
+ Γ¥» insertTestFeed src/test-helpers.ts:26:10
+     24|     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     25|   `);
+     26|   insert.run(
+       |          ^
+     27|     id,
+     28|     overrides.name ?? `Test Feed ${feedCounter}`,
+ Γ¥» src/recap.test.ts:25:21
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[13/19]ΓÄ»
+
+ FAIL  src/recap.test.ts > recap > excludes articles older than the requested window
+SqliteError: UNIQUE constraint failed: feeds.id
+ Γ¥» insertTestFeed src/test-helpers.ts:26:10
+     24|     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     25|   `);
+     26|   insert.run(
+       |          ^
+     27|     id,
+     28|     overrides.name ?? `Test Feed ${feedCounter}`,
+ Γ¥» src/recap.test.ts:70:20
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[14/19]ΓÄ»
+
+ FAIL  src/search.test.ts > search > returns empty results when no articles match
+SqliteError: UNIQUE constraint failed: feeds.id
+ Γ¥» insertTestFeed src/test-helpers.ts:26:10
+     24|     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     25|   `);
+     26|   insert.run(
+       |          ^
+     27|     id,
+     28|     overrides.name ?? `Test Feed ${feedCounter}`,
+ Γ¥» src/search.test.ts:18:20
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[15/19]ΓÄ»
+
+ FAIL  src/search.test.ts > search > finds articles by title
+SqliteError: UNIQUE constraint failed: feeds.id
+ Γ¥» insertTestFeed src/test-helpers.ts:26:10
+     24|     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     25|   `);
+     26|   insert.run(
+       |          ^
+     27|     id,
+     28|     overrides.name ?? `Test Feed ${feedCounter}`,
+ Γ¥» src/search.test.ts:24:20
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[16/19]ΓÄ»
+
+ FAIL  src/search.test.ts > search > finds articles by description
+SqliteError: UNIQUE constraint failed: feeds.id
+ Γ¥» insertTestFeed src/test-helpers.ts:26:10
+     24|     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     25|   `);
+     26|   insert.run(
+       |          ^
+     27|     id,
+     28|     overrides.name ?? `Test Feed ${feedCounter}`,
+ Γ¥» src/search.test.ts:36:20
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[17/19]ΓÄ»
+
+ FAIL  src/search.test.ts > search > limits the number of results
+SqliteError: UNIQUE constraint failed: feeds.id
+ Γ¥» insertTestFeed src/test-helpers.ts:26:10
+     24|     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     25|   `);
+     26|   insert.run(
+       |          ^
+     27|     id,
+     28|     overrides.name ?? `Test Feed ${feedCounter}`,
+ Γ¥» src/search.test.ts:50:20
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[18/19]ΓÄ»
+
+ FAIL  src/search.test.ts > search > returns recent articles when query is empty
+SqliteError: UNIQUE constraint failed: feeds.id
+ Γ¥» insertTestFeed src/test-helpers.ts:26:10
+     24|     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     25|   `);
+     26|   insert.run(
+       |          ^
+     27|     id,
+     28|     overrides.name ?? `Test Feed ${feedCounter}`,
+ Γ¥» src/search.test.ts:60:20
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[19/19]ΓÄ»
+
+
+ Test Files  7 failed | 8 passed (15)
+      Tests  16 failed | 101 passed | 14 skipped (131)
+   Start at  14:20:19
+   Duration  4.58s (transform 2.91s, setup 0ms, import 4.58s, tests 7.38s, environment 2ms)
+

@@ -1,0 +1,1 @@
+import { defineConfig } from "vitest/config"; import tsconfigPaths from "vite-tsconfig-paths"; export default defineConfig({ test: { name: "civicfeed-integration", environment: "node", isolate: true, testTimeout: 30000 }, plugins: [tsconfigPaths()] });

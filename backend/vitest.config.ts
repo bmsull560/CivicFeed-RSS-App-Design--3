@@ -1,4 +1,5 @@
 import { defineConfig } from "vitest/config";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 // Use an in-memory SQLite database for all tests.
 process.env.CIVICFEED_DB_PATH = ":memory:";
@@ -9,5 +10,6 @@ export default defineConfig({
   test: {
     environment: "node",
     globals: false,
+    plugins: [tsconfigPaths()],
   },
 });

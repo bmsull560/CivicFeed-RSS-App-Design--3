@@ -1,0 +1,8 @@
+src/articlesRouter.ts(10,15): error TS2305: Module '"./db.js"' has no exported member 'FeedRow'.
+src/articlesRouter.ts(129,44): error TS2304: Cannot find name 'ArticleByIdRow'.
+src/feedsRouter.ts(89,32): error TS2551: Property 'short_name' does not exist on type 'Feed'. Did you mean 'shortName'?
+src/feedsRouter.ts(92,29): error TS2551: Property 'rss_url' does not exist on type 'Feed'. Did you mean 'rssUrl'?
+src/feedsRouter.ts(96,34): error TS2551: Property 'sub_category' does not exist on type 'Feed'. Did you mean 'subCategory'?
+src/feedsRouter.ts(97,34): error TS2551: Property 'content_type' does not exist on type 'Feed'. Did you mean 'contentType'?
+src/feedsRouter.ts(98,38): error TS2551: Property 'update_frequency' does not exist on type 'Feed'. Did you mean 'updateFrequency'?
+src/rss-adapter.ts(50,5): error TS2741: Property 'content' is missing in type 'GuardedFetchResult' but required in type 'RawDocument'.

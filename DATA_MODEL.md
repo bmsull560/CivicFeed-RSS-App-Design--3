@@ -11,17 +11,17 @@ Entities, relationships, schemas, indexes, migrations, and retention rules for t
 
 ## Entity Relationships
 
-```
-feeds (1) ──────── (N) article_cache
-  │                      │
-  │                      ├── (1:1) article_summaries
-  │                      ├── (N) article_tags
-  │                      └── (1:1) article_search (FTS5, via triggers)
+```markdown
+feeds (1) ──ON DELETE CASCADE── (N) article_cache
+  │                                │
+  │                                ├── (1:1) article_summaries   (CASCADE)
+  │                                ├── (N) article_tags          (CASCADE)
+  │                                └── (1:1) article_search      (via triggers)
   │
-  ├── (1:1) feed_fetch_status
-  └── (N) enrichment_jobs
+  ├── (1:1) feed_fetch_status      (CASCADE)
+  └── (N) enrichment_jobs          (CASCADE)
 
-migrations (standalone tracking table)
+migrations (standalone tracking table — no FK, not cascade-deleted)
 ```
 
 ## Tables

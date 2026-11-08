@@ -1,0 +1,36 @@
+
+ RUN  v4.1.10 C:/Users/BBB/CivicFeed/CivicFeed-RSS-App-Design--3/backend
+
+stdout | src/server.test.ts
+Synced 594 feeds.
+
+ Γ¥» src/server.test.ts (14 tests | 1 failed | 13 skipped) 24ms
+     ├ù GET /api/health returns ok with database check 22ms
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Failed Tests 1 ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+
+ FAIL  src/server.test.ts > server > GET /api/health returns ok with database check
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ Γ¥» src/server.test.ts:20:24
+     18|   it("GET /api/health returns ok with database check", async () => {
+     19|     const res = await request(app).get("/api/health");
+     20|     expect(res.status).toBe(200);
+       |                        ^
+     21|     expect(res.body.status).toBe("ok");
+     22|     expect(res.body.timestamp).toBeDefined();
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[1/1]ΓÄ»
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 skipped (14)
+   Start at  16:39:15
+   Duration  836ms (transform 246ms, setup 0ms, import 497ms, tests 24ms, environment 0ms)
+
