@@ -145,11 +145,12 @@ Get articles for a feed. Returns cached articles if available (15-minute TTL), o
 
 **Response 200**:
 
-| Field   | Type           | Description                     |
-| ------- | -------------- | ------------------------------- |
-| entries | Article[]      | Array of articles               |
-| cached  | boolean        | Whether entries came from cache |
-| error   | string or null | Error message if any            |
+| Field   | Type                           | Description                                                                    |
+| ------- | ------------------------------ | ------------------------------------------------------------------------------ |
+| entries | Article[]                      | Array of articles                                                                |
+| cached  | boolean                        | Whether entries came from cache                                                  |
+| stale   | boolean                        | Whether entries are stale (older than 15 minutes)                                |
+| error   | string or null                 | Error message if the refresh failed (HTTP 200 with stale entries + error)       |
 
 **Article object shape**:
 
