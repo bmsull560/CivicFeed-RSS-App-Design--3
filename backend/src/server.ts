@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import rateLimit from "express-rate-limit";
 import { db } from "./db.js";
 import { fetchFeed, type RssEntry } from "./rss.js";
 import { getArticleCacheSnapshot, saveArticles } from "./cache.js";
@@ -117,7 +118,8 @@ app.get("/api/ready", (_req, res) => {
 });
 
 // List all feeds
-app.get("/api/feeds", (_req, res) => {
+const feedLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }); // 100 requests per 15 min
+app.get("/api/feeds", feedLimiter, (_req, res) => {
   const rows = db.prepare("SELECT * FROM feeds ORDER BY name").all() as FeedRow[];
   const feeds = rows.map((r) => ({
     id: r.id,
@@ -151,7 +153,8 @@ app.get("/api/feeds", (_req, res) => {
 });
 
 // Get single feed
-app.get("/api/feeds/:id", (req, res) => {
+const feedIdLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }); // 100 requests per 15 min
+app.get("/api/feeds/:id", feedIdLimiter, (req, res) => {
   const row = db.prepare("SELECT * FROM feeds WHERE id = ?").get(req.params.id) as
     FeedRow | undefined;
   if (!row) return res.status(404).json({ error: "Feed not found" });
@@ -238,7 +241,8 @@ app.get("/api/feeds/:id/health", async (req, res) => {
 });
 
 // Get articles for a feed (backend cache + async AI enrichment queue)
-app.get("/api/feeds/:id/articles", async (req, res) => {
+const articlesLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }); // 100 requests per 15 min
+app.get("/api/feeds/:id/articles", articlesLimiter, async (req, res) => {
   const feedId = req.params.id;
 
   const feedRow = db.prepare("SELECT * FROM feeds WHERE id = ?").get(feedId) as FeedRow | undefined;
@@ -346,7 +350,8 @@ app.get("/api/articles/recent", (req, res) => {
 });
 
 // Fetch cached articles by entry id (used for bookmarks/archive)
-app.post("/api/articles/by-ids", express.json(), (req, res) => {
+const byIdsLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }); // 100 requests per 15 min
+app.post("/api/articles/by-ids", byIdsLimiter, express.json(), (req, res) => {
   const ids = req.body?.ids as string[] | undefined;
   if (!Array.isArray(ids) || ids.length === 0) {
     return res.json({ results: [] });
